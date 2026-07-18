@@ -4,7 +4,7 @@ import {db, eq} from "@repo/database"
 import {usersTable} from "@repo/database/models/user"
 
 import { createUserWithEmailAndPasswordInput, generateUserTokenPayload, GenerateUserTokenPayloadType, type CreateUserWithEmailAndPasswordInputType } from "./model";
-import { env } from "../env";
+import { env } from "@repo/env";
 
 export class UserService{
 

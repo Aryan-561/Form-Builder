@@ -1,15 +1,23 @@
-import { api } from "~/trpc/server";
+import { SiteHeader } from "~/components/organisms/SiteHeader";
+import { HeroSection } from "~/components/organisms/HeroSection";
+import { FeaturesSection } from "~/components/organisms/FeaturesSection";
+import { TemplatesSection } from "~/components/organisms/TemplatesSection";
+import { PricingSection } from "~/components/organisms/PricingSection";
+import { CTASection } from "~/components/organisms/CTASection";
+import { SiteFooter } from "~/components/organisms/SiteFooter";
 
-export default async function Home() {
-  const { status } = await api.health.getHealth.query();
-  const {name}= await api.test.query({name:"maddy"})
+export default function LandingPage() {
   return (
-    <main className="min-h-screen min-w-screen flex justify-center items-center">
-      <div>
-        <h1 className="text-3xl">Streamyst - Stream in Style</h1>
-        <h2>Server Status: {status}</h2>
-        <h2>Server Response: {name}</h2>
-      </div>
-    </main>
+    <div className="min-h-screen bg-background">
+      <SiteHeader />
+      <main>
+        <HeroSection />
+        <FeaturesSection />
+        <TemplatesSection />
+        <PricingSection />
+        <CTASection />
+      </main>
+      <SiteFooter />
+    </div>
   );
 }

@@ -9,7 +9,7 @@ import { apiReference } from "@scalar/express-api-reference";
 
 import { serverRouter, createContext } from "@repo/trpc/server";
 
-import { env } from "./env";
+import { env } from "@repo/env";
 
 export const app = express();
 const openApiDocument = generateOpenApiDocument(serverRouter, {

@@ -1,0 +1,20 @@
+$urls = @{
+    "login.html" = "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzg5NDI5NmFlZDk5MDRkZTY5ZmYwOWE5MWU0MTMxNGQ2EgsSBxCVq5ftnQMYAZIBJAoKcHJvamVjdF9pZBIWQhQxNDA4OTg4ODIwMTc4MjE3ODQwNw&filename=&opi=89354086"
+    "dashboard.html" = "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzU4NmQ0NTUyNzk0ZjQ4NWRiOTA4NTgzZDQ3YTFlOWNkEgsSBxCVq5ftnQMYAZIBJAoKcHJvamVjdF9pZBIWQhQxNDA4OTg4ODIwMTc4MjE3ODQwNw&filename=&opi=89354086"
+    "analytics.html" = "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzkxMTM1YTI1YTg0MTQ5MTliOTIxYTMzMTM5MDcxOTdlEgsSBxCVq5ftnQMYAZIBJAoKcHJvamVjdF9pZBIWQhQxNDA4OTg4ODIwMTc4MjE3ODQwNw&filename=&opi=89354086"
+    "signup.html" = "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzgxMTkxZWFjZTU0NDQ4ZTY5MzYzZGI4ZjIzNDM0MGFkEgsSBxCVq5ftnQMYAZIBJAoKcHJvamVjdF9pZBIWQhQxNDA4OTg4ODIwMTc4MjE3ODQwNw&filename=&opi=89354086"
+    "builder.html" = "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzUyYjdmNWMzNWZjODRlNzM4OTg2YjkyMjNhMTBkOTMwEgsSBxCVq5ftnQMYAZIBJAoKcHJvamVjdF9pZBIWQhQxNDA4OTg4ODIwMTc4MjE3ODQwNw&filename=&opi=89354086"
+    "landing.html" = "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sX2U0MTE4YmJiMzM3YjRlNDc5NzI5ZGMxZTJjMjBiZDE1EgsSBxCVq5ftnQMYAZIBJAoKcHJvamVjdF9pZBIWQhQxNDA4OTg4ODIwMTc4MjE3ODQwNw&filename=&opi=89354086"
+    "login_screenshot.png" = "https://lh3.googleusercontent.com/aida/AP1WRLuMyP07TaLfwrhLUXWT8lrTLFDsKF4IGRQpI43_yqs0R0h8ctFgjnqIbm2dUakM_3O0_V3X9zLJwAM0IccAp9uJad3qPoL8R5yoS2ZD5pwmHgXliOCG_wRVqMJsSX9W1sZZ4-hMtAK-XuDLf6Q9h1m3w_KQAFuGRQAcaoDic87ElVHIngootFVAa3ZhpmbQVMPsJEW6ESZ4f0Ap2QPekMGhFzNlWw2G1AnMtULrNidh0VviW2G_s9VJ-jwT"
+    "dashboard_screenshot.png" = "https://lh3.googleusercontent.com/aida/AP1WRLtY4Hdvxdfhjk6-43mE1ADMkQp5p69NVhJdgYDyTkKdFbmqYcHlBYSEjvTbJ2gOoJ2Di2qcOF2duG-0OtNvbZMMnU65G73F2BlgUIxNpmX11o7KaVBVqOhmAHXY4V2aluA4IkKOj1MFnlgjFuzlGVPCAD21X83iIaCA3X7LfsQEH-1CmmIbJ2L5viVjQLQJPTv_Nv6cHXvDpRzAa6bnZNuBgoYUTTX1ZwdH3mDXSHy0DJ5pPsb5eHkan7CG"
+    "analytics_screenshot.png" = "https://lh3.googleusercontent.com/aida/AP1WRLv2hF02ToQlhnVMUz1g-Qq3ZPtLGGcFr3xA99zOyGXIogzA-nuA5B_jj_X60wWbRUGSIy-7PEaxexZxHyqU3cF9DOeCerbni0QCPj16eUz4rjIJFrq7GVAzNoWLy7Yg_ipdU5G7joiUmpg5aENck82JpJ8rB7E43cfHZuz_12Q8pAvQzGIN1bJjANsDnXHSEBYSOqWk2ZWvWsQR-IjDxWxnUNnIlRVrB_gCrg3Nvi-_Rf9GYxz92ToJrHwI"
+    "signup_screenshot.png" = "https://lh3.googleusercontent.com/aida/AP1WRLt9ADaV5T4izl7TngQYit4_BSBnjuU4Jh09WEA3jzQKewzhnUTmwEdiSZtnkAY1qcITNYxKDwmQlnwa3hPUWzdJyH_tQs_y-jMTn1gNiO7kTq4WxAcZPw5Rfcp2irlTrRkKD45o-5bi-fOOXsghHPaClA-x7uJsRpUPzQt1BxPGrfR3j1vL-ci931vRL0duWhW96deMEretJlWUcscNDyxdcAnj3X7fBFNiqy4f_PChoT6LHALNrv_IPoz1"
+    "builder_screenshot.png" = "https://lh3.googleusercontent.com/aida/AP1WRLsu3rAnp6iBah0kswnT9Y1PL7lE4JZv8Ot-OoE2Tf6tMOfyn_-Qc8fl5wiJfCBsvpM6gWRPHO-XMkBLUV7noqe8hSRP6VZpeP8R_9H6iYkW0qKeBsruUXvM9mYdEvyOs_MJLg7lcVADp-czbTX5Qu7vJ3eOJjZDakk8qUVRCGOTYrKZY6ehqaTCJBRbdfqqARDLEApW2NnnsMfXQiQZEENcABI2beCrDJxNZiI3LR3LEkGNt2CLTpTaT7jE"
+    "landing_screenshot.png" = "https://lh3.googleusercontent.com/aida/AP1WRLsztGrlhY8OoA26eQr9jWoAVC-LzqHAa-htSX3Tltn9NM78vbryY0hP1yOJkU8ww3wd1Z6mKjKOcyGaSPtf_bQ0mnPk09gie6KQDzwuZxafqfVXdi7RUs2dWCcHYhzllWax3GJhwqKO722Bc_Bmsc01pGSUJwziabqXnWuxEYn6OzwDpznGOiSLx4zo_Wbs7Dx0poX9jj6Wi8pJsTzq8gJ6LPGE9vVQvUqjrpO0_--KP3atvx5ajkqxaFv7"
+}
+
+foreach ($key in $urls.Keys) {
+    Write-Host "Downloading $key..."
+    curl.exe -L -o $key $urls[$key]
+}
+Write-Host "Done."

@@ -1,5 +1,5 @@
 import winston from "winston";
-import { env } from "./env";
+import { env } from "@repo/env";
 
 type LoggerLevel = "error" | "info" | "debug";
 
