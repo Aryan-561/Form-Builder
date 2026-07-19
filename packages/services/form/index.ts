@@ -1,6 +1,6 @@
 import db from "@repo/database";
-import type { CreateFormInput } from "@repo/validators/src/createFrom.schema";
-import type { CreateFieldInput } from "@repo/validators/src/createField.schema";
+import type { CreateFormInput } from "@repo/validators/src";
+import type { CreateFieldInput } from "@repo/validators/src";
 import { formsTable } from "@repo/database/models/form"
 import { formFieldsTable } from "@repo/database/models/form_field"
 export class FormService {
