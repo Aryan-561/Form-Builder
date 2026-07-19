@@ -1,4 +1,5 @@
 import z, { success } from "zod"
+import { createFieldSchema } from "./createField.schema.js";
 
 export const statusTypeSchema = z.enum(["draft", "publish", "private", "unpublish"])
 
@@ -14,6 +15,7 @@ export const createFormSchema  = z.object({
     description:  z.string().trim().max(2000).optional().nullable(),
     slug: slugSchema,
     status: statusTypeSchema,
+    fields: z.array(createFieldSchema).max(50, "A form can have at most 50 fields.").default([]),
     accessCode: z.string().trim().min(8,"Code will min 8 character").max(18).optional().nullable()
 }).refine(
     (data) => data.status !== "private" || !!data.accessCode?.trim(),

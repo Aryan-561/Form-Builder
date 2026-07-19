@@ -24,6 +24,7 @@ export const createFieldSchema = z.object({
     label: z.string().trim().min(1, "Field label is required.").max(180),
     type: fieldTypeSchema,
     placeholder: z.string().trim().max(240).optional().nullable(),
+    index: z.number(),
     required: z.boolean().default(false),
     options: z.array(fieldOptionSchema).max(20, "A field can have at most 20 options.").optional(),
     
