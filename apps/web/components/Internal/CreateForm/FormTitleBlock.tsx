@@ -27,6 +27,7 @@ export function FormTitleBlock({
             value={title}
             onChange={(e) => onTitleChange(e.target.value)}
             onBlur={() => setIsEditingTitle(false)}
+            placeholder="Please Enter Title of your form"
             onKeyDown={(e) => {
               if (e.key === "Enter") setIsEditingTitle(false);
             }}
@@ -45,6 +46,7 @@ export function FormTitleBlock({
             autoFocus
             className="text-lg text-foreground h-auto py-2 px-3 -mx-3 border-primary resize-none"
             value={description}
+            placeholder="Please Enter Description of your form"
             onChange={(e) => onDescriptionChange(e.target.value)}
             onBlur={() => setIsEditingDesc(false)}
           />
