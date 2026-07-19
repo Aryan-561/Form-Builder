@@ -2,12 +2,14 @@ import { publicProcedure, router } from "./trpc";
 
 import { healthRouter } from "./routes/health/route";
 import { authRouter } from "./routes/auth/route";
+import { formRouter } from "./routes/form/route";
 import { procedureTypes } from "@trpc/server/dist/unstable-core-do-not-import.d-BXekdOPr.cjs";
 import z from "zod";
 
 export const serverRouter = router({
   health: healthRouter,
   auth: authRouter,
+  form: formRouter,
   test: publicProcedure
   .meta({ openapi: { method: "GET", path: "/test" } })
   .input(z.object({name:z.string()}))
