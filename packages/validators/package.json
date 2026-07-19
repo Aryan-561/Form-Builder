@@ -4,9 +4,7 @@
   "description": "",
   "main": "index.js",
   "exports": {
-    ".": "./src/index.ts",
-    "./create-field": "./src/createField.schema.ts",
-    "./create-form": "./src/createForm.schema.ts"
+    "./src": "./src/index.ts"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

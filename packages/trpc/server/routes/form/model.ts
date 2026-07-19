@@ -1,5 +1,5 @@
 import z from "zod";
-import { createFormSchema as createFormInputModel } from "@repo/validators/src/createFrom.schema";
+import { createFormBaseSchema as createFormInputModel } from "@repo/validators/src";
 
 export {createFormInputModel}
 
