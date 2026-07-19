@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, text, boolean, pgEnum, jsonb, numeric, timestamp, unique } from "drizzle-orm/pg-core";
+import { pgTable, uuid, varchar, text, boolean, pgEnum, jsonb, integer, timestamp, unique } from "drizzle-orm/pg-core";
 import { formsTable } from "./form";
 
 
@@ -22,7 +22,7 @@ export const formFieldsTable = pgTable("formFields", {
     placeholder: text("placeholder"),
     required: boolean("required").default(false).notNull(),
     options: jsonb("options").$type<string[]>(),
-    index: numeric('index', { scale: 2 }).notNull(),
+    index: integer('index').notNull(),
     createdAt: timestamp("createdAt", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updatedAt", { withTimezone: true })
         .defaultNow()
