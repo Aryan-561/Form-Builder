@@ -1,5 +1,6 @@
 import { AppSidebar } from "~/components/organisms/AppSidebar";
 import { DashboardTopNav } from "~/components/organisms/DashboardTopNav";
+import { SidebarProvider } from "~/components/ui/sidebar";
 
 export default function DashboardLayout({
   children,
@@ -7,14 +8,16 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-background">
-      <AppSidebar />
-      <div className="ml-64 flex flex-col min-h-screen">
-        <DashboardTopNav />
-        <main className="flex-1">
-          {children}
-        </main>
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full bg-background">
+        <AppSidebar />
+        <div className="flex flex-col flex-1 w-full min-w-0">
+          <DashboardTopNav />
+          <main className="flex-1 p-6">
+            {children}
+          </main>
+        </div>
       </div>
-    </div>
+    </SidebarProvider>
   );
 }

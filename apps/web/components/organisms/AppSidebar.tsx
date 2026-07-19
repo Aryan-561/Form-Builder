@@ -1,67 +1,113 @@
+"use client";
+
 import Link from "next/link";
-import { 
-  FileText, 
-  LayoutDashboard, 
-  FileSpreadsheet, 
-  LayoutTemplate, 
-  BarChart2, 
-  Settings, 
-  HelpCircle, 
+import { usePathname } from "next/navigation";
+import {
+  FileText,
+  LayoutDashboard,
+  FileSpreadsheet,
+  LayoutTemplate,
+  BarChart2,
+  Settings,
+  HelpCircle,
   LogOut,
-  Plus
+  Plus,
 } from "lucide-react";
-import { Button } from "~/components/ui/button";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "~/components/ui/sidebar";
+import Logo from "../logo/logo";
+
+const navItems = [
+  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+  { title: "Forms", url: "#", icon: FileSpreadsheet },
+  { title: "Templates", url: "#", icon: LayoutTemplate },
+  { title: "Analytics", url: "/analytics", icon: BarChart2 },
+  { title: "Settings", url: "#", icon: Settings },
+];
 
 export function AppSidebar() {
+  const pathname = usePathname();
+
   return (
-    <aside className="w-64 h-screen fixed left-0 top-0 bg-background flex flex-col py-8 px-4 z-50 border-r border-border">
-      <div className="mb-10 px-2">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-primary-foreground">
-            <FileText className="w-6 h-6" />
-          </div>
-          <div>
-            <h1 className="font-sans text-xl font-bold text-foreground tracking-tight">ProForms</h1>
-            <p className="text-xs text-muted-foreground">Workspace Pro</p>
-          </div>
-        </div>
-      </div>
-      <Button className="mb-8 w-full font-bold flex items-center justify-center gap-2 shadow-sm">
-        <Plus className="w-4 h-4" />
-        Create New Form
-      </Button>
-      <nav className="flex-1 space-y-1">
-        <Link href="/dashboard" className="flex items-center gap-3 px-4 py-3 rounded-lg text-primary font-bold border-r-2 border-primary bg-accent transition-colors duration-200">
-          <LayoutDashboard className="w-5 h-5" />
-          <span className="font-sans text-sm">Dashboard</span>
-        </Link>
-        <Link href="#" className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors duration-200">
-          <FileSpreadsheet className="w-5 h-5" />
-          <span className="font-sans text-sm">Forms</span>
-        </Link>
-        <Link href="#" className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors duration-200">
-          <LayoutTemplate className="w-5 h-5" />
-          <span className="font-sans text-sm">Templates</span>
-        </Link>
-        <Link href="/analytics" className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors duration-200">
-          <BarChart2 className="w-5 h-5" />
-          <span className="font-sans text-sm">Analytics</span>
-        </Link>
-        <Link href="#" className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors duration-200">
-          <Settings className="w-5 h-5" />
-          <span className="font-sans text-sm">Settings</span>
-        </Link>
-      </nav>
-      <div className="mt-auto pt-8 border-t border-border space-y-1">
-        <Link href="#" className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground transition-colors">
-          <HelpCircle className="w-5 h-5" />
-          <span className="font-sans text-sm">Help Center</span>
-        </Link>
-        <Link href="/" className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground transition-colors">
-          <LogOut className="w-5 h-5" />
-          <span className="font-sans text-sm">Log Out</span>
-        </Link>
-      </div>
-    </aside>
+    <Sidebar collapsible="icon" className="border-r border-border">
+      <SidebarHeader className="pt-3 border-b">
+        <SidebarMenu>
+          <SidebarMenuItem className="flex items-center justify-center">
+            <Logo 
+              size={32} 
+              titleClassName="group-data-[collapsible=icon]:hidden" 
+              className="group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 px-2"
+            />
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem className="mb-4">
+                <SidebarMenuButton
+                  asChild
+                  tooltip="Create New Form"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground font-semibold shadow-sm justify-center group-data-[collapsible=icon]:p-2 group-data-[collapsible=icon]:justify-center"
+                >
+                  <Link href="/builder">
+                    <Plus className="size-4 shrink-0" />
+                    <span className="group-data-[collapsible=icon]:hidden">Create New Form</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              {navItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton
+                    asChild
+                    tooltip={item.title}
+                    isActive={pathname === item.url}
+                    className="font-medium"
+                  >
+                    <Link href={item.url}>
+                      <item.icon className="size-4" />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+
+      <SidebarFooter className="pb-6">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild tooltip="Help Center" className="font-medium">
+              <Link href="#">
+                <HelpCircle className="size-4" />
+                <span>Help Center</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild tooltip="Log Out" className="font-medium">
+              <Link href="/">
+                <LogOut className="size-4" />
+                <span>Log Out</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+    </Sidebar>
   );
 }
