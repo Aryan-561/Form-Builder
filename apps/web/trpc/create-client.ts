@@ -6,8 +6,11 @@ interface CreateTRPCHttpBatchClientClientOpts {
 
 export const createTRPCHttpBatchClientClient = (opts?: CreateTRPCHttpBatchClientClientOpts) => {
   const c = opts?.enableStreaming ? httpBatchStreamLink : httpLink;
+  
+  const baseUrl = "http://localhost:8000";
+  
   return c({
-    url: "/trpc",
+    url: `${baseUrl}/trpc`,
     fetch(url, options) {
       return fetch(url, {
         ...options,

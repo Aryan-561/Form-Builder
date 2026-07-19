@@ -14,6 +14,8 @@ import Logo from "~/components/logo/logo";
 import { Button } from "~/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Save } from "lucide-react";
+import { useCreateForm } from "~/hooks/use-form";
+import { toast } from "sonner";
 
 export default function BuilderPage() {
   const [selectedElement, setSelectedElement] = useState<FormElement[]>([]);
@@ -22,13 +24,24 @@ export default function BuilderPage() {
   const [formTitle, setFormTitle] = useState("Event Registration");
   const [formDescription, setFormDescription] = useState("Register for the AI Workshop");
 
+  const createFormMutation = useCreateForm();
+
   const handleSaveFormDefinition = () => {
-    const formDefinition = {
+    const slug = formTitle
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "") +
+      "-" +
+      Math.random().toString(36).substring(2, 6);
+
+    const payload = {
       title: formTitle,
       description: formDescription,
-      fields: selectedElement.map((el) => {
+      slug: slug,
+      status: "draft" as const, // default status
+      fields: selectedElement.map((el, index) => {
         const baseField: any = {
-          id: el.uniqueId,
+          index,
           type: el.type,
           label: el.label,
           placeholder: el.placeholder,
@@ -46,8 +59,13 @@ export default function BuilderPage() {
       }),
     };
 
-    console.log("Form Definition Payload (Backend schema):", formDefinition);
-    alert("Form Definition Payload:\n" + JSON.stringify(formDefinition, null, 2));
+    console.log("Form Definition Payload (Backend schema):", payload);
+    
+    toast.promise(createFormMutation.mutateAsync(payload as any), {
+      loading: "Saving form...",
+      success: "Form saved successfully!",
+      error: "Failed to save form. Check console for details.",
+    });
   };
 
   const sensors = useSensors(
@@ -123,12 +141,13 @@ export default function BuilderPage() {
         <div className="bg-muted/50 border-b py-2 px-8 flex justify-end gap-3">
           <Button
             onClick={handleSaveFormDefinition}
+            disabled={createFormMutation.isPending}
             variant="outline"
             className="font-semibold"
             size="sm"
           >
             <Save className="w-4 h-4 mr-2" />
-            Save Form Definition
+            {createFormMutation.isPending ? "Saving..." : "Save Form Definition"}
           </Button>
         </div>
 
