@@ -44,9 +44,13 @@ const envSchema = z.object({
   GOOGLE_OAUTH_REDIRECT_URI: z.string().optional(),
 
   NEXT_PUBLIC_API_URL: z.string().url().optional(),
+  NEXT_PUBLIC_SUPABASE_URL: z.string().url().min(1),
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
+  BETTER_AUTH_SECRET: z.string().min(1),
+  BETTER_AUTH_URL: z.string().url().min(1),
 
-  // JWT_SECRET: z.string().describe("secret used to sign jwt tokens").optional(),
-  // JWT_REFRESH_SECRET: z.string().describe("secret used to sign refresh tokens").optional(),
+  JWT_SECRET: z.string().describe("secret used to sign jwt tokens").optional(),
+  JWT_REFRESH_SECRET: z.string().describe("secret used to sign refresh tokens").optional(),
 
   // SMS_ACCOUNT_SID: z.string(),
   // SMS_AUTH_TOKEN: z.string(),
