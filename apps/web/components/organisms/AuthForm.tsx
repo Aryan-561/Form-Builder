@@ -7,7 +7,9 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Button } from "~/components/ui/button";
 import { useState, useTransition } from "react";
-import { login, signup } from "~/app/auth/actions";
+import { useLogin, useSignUp } from "~/hooks/use-auth";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface AuthFormProps {
   type: "login" | "signup";
@@ -20,14 +22,50 @@ export function AuthForm({ type }: AuthFormProps) {
 
   const isLogin = type === "login";
 
+  const { mutateAsync: login } = useLogin();
+  const { mutateAsync: signup } = useSignUp();
+  const router = useRouter();
+
   async function handleSubmit(formData: FormData) {
     setError(null);
     startTransition(async () => {
-      const action = isLogin ? login : signup;
-      const result = await action(formData);
-      // If result is returned (no redirect), it contains an error
-      if (result?.error) {
-        setError(result.error);
+      const email = formData.get("email") as string;
+      const password = formData.get("password") as string;
+
+      if (isLogin) {
+        toast.promise(login({ email, password }), {
+          loading: "Signing in...",
+          success: () => {
+            router.push("/dashboard");
+            router.refresh();
+            return "Successfully signed in!";
+          },
+          error: (err) => {
+            setError(err.message);
+            return err.message;
+          },
+        });
+      } else {
+        const name = formData.get("name") as string;
+        toast.promise(
+          signup({
+            email,
+            password,
+            options: { data: { name } },
+          }),
+          {
+            loading: "Creating account...",
+            success: () => {
+              router.push("/dashboard");
+              router.refresh();
+              return "Account created successfully!";
+            },
+            error: (err) => {
+              setError(err.message);
+              return err.message;
+            },
+          },
+        );
       }
     });
   }
