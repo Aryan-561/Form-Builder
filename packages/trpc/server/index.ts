@@ -3,22 +3,23 @@ import { publicProcedure, router } from "./trpc";
 import { healthRouter } from "./routes/health/route";
 import { authRouter } from "./routes/auth/route";
 import { formRouter } from "./routes/form/route";
-import { procedureTypes } from "@trpc/server/dist/unstable-core-do-not-import.d-BXekdOPr.cjs";
+import { userRouter } from "./routes/user/route";
 import z from "zod";
 
 export const serverRouter = router({
   health: healthRouter,
   auth: authRouter,
   form: formRouter,
+  user: userRouter,
   test: publicProcedure
-  .meta({ openapi: { method: "GET", path: "/test" } })
-  .input(z.object({name:z.string()}))
-  .output(z.object({name:z.string()}))
-  .query(async({input})=>{
-    return {
-      name: input.name
-    }
-  })
+    .meta({ openapi: { method: "GET", path: "/test" } })
+    .input(z.object({ name: z.string() }))
+    .output(z.object({ name: z.string() }))
+    .query(async ({ input }) => {
+      return {
+        name: input.name,
+      };
+    }),
 });
 
 export { createContext } from "./context";
