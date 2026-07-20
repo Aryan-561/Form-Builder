@@ -3,7 +3,6 @@ import { publicProcedure, router } from "../../trpc";
 import { generatePath } from "../../utils/path-generator";
 import { createFormInputModel, createFormOutputModel } from "./model";
 
-
 const TAGS = ["Form"];
 const getPath = generatePath("/form");
 
@@ -13,8 +12,7 @@ export const formRouter = router({
     .input(createFormInputModel)
     .output(createFormOutputModel)
     .mutation(async ({ input, ctx }) => {
-      // TODO: replace with authenticated user id once auth middleware is wired up
-      const userId = "temp-user-id";
+      const userId = ctx.user?.id as string;
 
       const form = await formService.createForm(userId, input);
 
