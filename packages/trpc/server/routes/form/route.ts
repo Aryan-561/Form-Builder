@@ -1,7 +1,8 @@
 import { formService } from "../../services";
 import { publicProcedure, router } from "../../trpc";
 import { generatePath } from "../../utils/path-generator";
-import { createFormInputModel, createFormOutputModel } from "./model";
+import { createFormInputModel, createFormOutputModel, getUserFormsOutputModel } from "./model";
+import z from "zod";
 
 const TAGS = ["Form"];
 const getPath = generatePath("/form");
@@ -23,5 +24,15 @@ export const formRouter = router({
         status: form.status,
         createdAt: form.createdAt,
       };
+    }),
+
+  getUserForms: publicProcedure
+    .meta({ openapi: { method: "GET", path: getPath("/list"), tags: TAGS } })
+    .input(z.void())
+    .output(getUserFormsOutputModel)
+    .query(async ({ ctx }) => {
+      const userId = ctx.user?.id as string;
+
+      return await formService.getUserForms(userId);
     }),
 });
