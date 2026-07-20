@@ -1,4 +1,4 @@
-import z from "zod"
+import z from "zod";
 
 const OPTION_BASED_TYPES = ["select", "checkbox"] as const;
 
@@ -19,24 +19,25 @@ export const fieldOptionSchema = z
   .min(1, "Options cannot be empty.")
   .max(80, "Options must be 80 characters or fewer.");
 
-
 export const createFieldBaseSchema = z.object({
-    label: z.string().trim().min(1, "Field label is required.").max(180),
-    type: fieldTypeSchema,
-    placeholder: z.string().trim().max(240).optional().nullable(),
-    index: z.number(),
-    required: z.boolean().default(false),
-    options: z.array(fieldOptionSchema).max(20, "A field can have at most 20 options.").optional(),
+  id: z.uuid().optional(),
+  label: z.string().trim().min(1, "Field label is required.").max(180),
+  type: fieldTypeSchema,
+  placeholder: z.string().trim().max(240).optional().nullable(),
+  index: z.number(),
+  required: z.boolean().default(false),
+  options: z.array(fieldOptionSchema).max(20, "A field can have at most 20 options.").optional(),
 });
 
-export const createFieldSchema = createFieldBaseSchema.refine(
+export const createFieldSchema = createFieldBaseSchema
+  .refine(
     (data) =>
       !OPTION_BASED_TYPES.includes(data.type as any) ||
       (Array.isArray(data.options) && data.options.length > 0),
     {
       message: "At least one option is required for select/checkbox fields",
       path: ["options"],
-    }
+    },
   )
   .refine(
     (data) =>
@@ -46,8 +47,8 @@ export const createFieldSchema = createFieldBaseSchema.refine(
     {
       message: "Options should only be provided for select/checkbox fields",
       path: ["options"],
-    }
+    },
   );
 
-  export type FieldType = z.infer<typeof fieldTypeSchema>;
+export type FieldType = z.infer<typeof fieldTypeSchema>;
 export type CreateFieldInput = z.infer<typeof createFieldSchema>;
