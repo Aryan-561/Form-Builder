@@ -483,12 +483,18 @@ importers:
 
   packages/trpc:
     dependencies:
+      '@repo/env':
+        specifier: workspace:^
+        version: link:../env
       '@repo/services':
         specifier: workspace:*
         version: link:../services
       '@repo/validators':
         specifier: workspace:*
         version: link:../validators
+      '@supabase/supabase-js':
+        specifier: ^2.110.7
+        version: 2.110.7
       '@trpc/client':
         specifier: ^11.8.1
         version: 11.8.1(@trpc/server@11.8.1(typescript@5.9.3))(typescript@5.9.3)
