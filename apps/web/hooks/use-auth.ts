@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { createClient } from "~/lib/supabase/client";
+import { trpc } from "~/trpc/client";
 import type {
   SignInWithPasswordCredentials,
   SignUpWithPasswordCredentials,
@@ -7,11 +8,21 @@ import type {
 
 export const useSignUp = () => {
   const supabase = createClient();
+  const utils = trpc.useUtils();
+
   return useMutation({
     mutationFn: async (credentials: SignUpWithPasswordCredentials) => {
       const { data, error } = await supabase.auth.signUp(credentials);
       if (error) throw error;
       return data;
+    },
+    onSuccess: async (data) => {
+      const user = data.user;
+      if (!user?.email) return;
+
+      // Ensure a row exists in public.users for this new auth user.
+      // user.me auto-creates the row if it's missing (new signup recovery).
+      // await utils.user.me.fetch({ id: user.id, email: user.email });
     },
   });
 };

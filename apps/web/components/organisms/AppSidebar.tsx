@@ -2,17 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  FileText,
-  LayoutDashboard,
-  FileSpreadsheet,
-  LayoutTemplate,
-  BarChart2,
-  Settings,
-  HelpCircle,
-  LogOut,
-  Plus,
-} from "lucide-react";
+import { LayoutDashboard, FileSpreadsheet, LayoutTemplate, BarChart2, Plus } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -25,26 +15,43 @@ import {
   SidebarMenuItem,
 } from "~/components/ui/sidebar";
 import Logo from "../logo/logo";
+import { UserMenu } from "./UserMenu";
+import { PlanUsageCard } from "./PlanUsageCard";
+import { useGetPlan, useMe } from "~/hooks/use-user";
 
 const navItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-  { title: "Forms", url: "#", icon: FileSpreadsheet },
-  { title: "Templates", url: "#", icon: LayoutTemplate },
+  { title: "Forms", url: "/forms", icon: FileSpreadsheet },
+  { title: "Templates", url: "/templates", icon: LayoutTemplate },
   { title: "Analytics", url: "/analytics", icon: BarChart2 },
-  { title: "Settings", url: "#", icon: Settings },
 ];
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { data: userData } = useMe();
+  const { data: userPlan } = useGetPlan();
+
+  console.log("Fetched user data:", userData);
+  console.log("Fetched user plan:", userPlan);
+
+  // Combine fetched data with mock fallback while loading or if it fails
+  const currentUser = {
+    name: userData?.fullName || "John Doe",
+    email: userData?.email || "john@example.com",
+    plan: userPlan?.plan || "free",
+    credits: userPlan?.credits ?? 100,
+    usedForms: 2, // Hardcoded for now until forms data is available
+    maxForms: 3,
+  };
 
   return (
     <Sidebar collapsible="icon" className="border-r border-border">
       <SidebarHeader className="pt-3 border-b">
         <SidebarMenu>
           <SidebarMenuItem className="flex items-center justify-center">
-            <Logo 
-              size={32} 
-              titleClassName="group-data-[collapsible=icon]:hidden" 
+            <Logo
+              size={32}
+              titleClassName="group-data-[collapsible=icon]:hidden"
               className="group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 px-2"
             />
           </SidebarMenuItem>
@@ -73,7 +80,7 @@ export function AppSidebar() {
                   <SidebarMenuButton
                     asChild
                     tooltip={item.title}
-                    isActive={pathname === item.url}
+                    isActive={pathname === item.url || pathname.startsWith(item.url + "/")}
                     className="font-medium"
                   >
                     <Link href={item.url}>
@@ -88,23 +95,25 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="pb-6">
+      <SidebarFooter className="pb-4 px-2 space-y-4">
+        <div className="group-data-[collapsible=icon]:hidden">
+          <PlanUsageCard
+            plan={currentUser.plan as "free" | "pro"}
+            usedForms={currentUser.usedForms}
+            maxForms={currentUser.maxForms}
+            credits={currentUser.credits}
+          />
+        </div>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip="Help Center" className="font-medium">
-              <Link href="#">
-                <HelpCircle className="size-4" />
-                <span>Help Center</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip="Log Out" className="font-medium">
-              <Link href="/">
-                <LogOut className="size-4" />
-                <span>Log Out</span>
-              </Link>
-            </SidebarMenuButton>
+            <UserMenu
+              name={currentUser.name}
+              email={currentUser.email}
+              plan={currentUser.plan}
+              credits={currentUser.credits}
+              usedForms={currentUser.usedForms}
+              maxForms={currentUser.maxForms}
+            />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
