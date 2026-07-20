@@ -1,9 +1,10 @@
 "use client";
 
 import * as React from "react";
+import { useRouter } from "next/navigation";
 import { TemplateCard } from "~/components/ui/template-card";
 
-const MOCK_TEMPLATES = [
+export const MOCK_TEMPLATES = [
   {
     id: 1,
     title: "Contact Form",
@@ -38,6 +39,8 @@ const MOCK_TEMPLATES = [
 ];
 
 export default function TemplatesPage() {
+  const router = useRouter();
+
   return (
     <div className="flex flex-col h-full space-y-6">
       <div>
@@ -51,7 +54,7 @@ export default function TemplatesPage() {
             key={template.id}
             title={template.title}
             description={template.description}
-            onUse={() => console.log("Use template", template.id)}
+            onClick={() => router.push(`/builder/${template.id}`)}
           />
         ))}
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { LogOut, Settings, CreditCard, LayoutTemplate } from "lucide-react";
+import { LogOut, Settings, CreditCard, LayoutTemplate, Eye } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -82,6 +82,12 @@ export function UserMenu({ name, email, plan, credits, usedForms, maxForms }: Us
             <Link href="/settings">
               <Settings className="mr-2 size-4" />
               <span>Settings</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/settings/appearance">
+              <Eye className="mr-2 size-4" />
+              <span>Appearance</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>

@@ -2,7 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, FileSpreadsheet, LayoutTemplate, BarChart2, Plus } from "lucide-react";
+import {
+  LayoutDashboard,
+  FileSpreadsheet,
+  LayoutTemplate,
+  BarChart2,
+  Plus,
+  Palette,
+  Settings,
+} from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -21,7 +29,7 @@ import { useGetPlan, useMe } from "~/hooks/use-user";
 
 const navItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-  { title: "Forms", url: "/forms", icon: FileSpreadsheet },
+  { title: "My Forms", url: "/forms", icon: FileSpreadsheet },
   { title: "Templates", url: "/templates", icon: LayoutTemplate },
   { title: "Analytics", url: "/analytics", icon: BarChart2 },
 ];
@@ -31,10 +39,6 @@ export function AppSidebar() {
   const { data: userData } = useMe();
   const { data: userPlan } = useGetPlan();
 
-  console.log("Fetched user data:", userData);
-  console.log("Fetched user plan:", userPlan);
-
-  // Combine fetched data with mock fallback while loading or if it fails
   const currentUser = {
     name: userData?.fullName || "John Doe",
     email: userData?.email || "john@example.com",
