@@ -3,6 +3,7 @@ export * from "zod";
 export * from "./createField.schema.js";
 export * from "./createForm.schema.js";
 export * from "./updateForm.schema.js";
+export * from "./updateStatus.schema.js";
 
 export const uuidInput = z.uuid();
 
