@@ -1,6 +1,11 @@
 import db, { eq, desc, and, inArray, not } from "@repo/database";
 import { createFormSchema, type CreateFormInput } from "@repo/validators/src";
-import type { CreateFieldInput, UpdateFormInput, UUidInput } from "@repo/validators/src";
+import type {
+  CreateFieldInput,
+  UpdateFormInput,
+  UpdateStatusSchema,
+  UUidInput,
+} from "@repo/validators/src";
 import { formsTable } from "@repo/database/models/form";
 import { formFieldsTable } from "@repo/database/models/form_field";
 
@@ -178,7 +183,7 @@ export class FormService {
     }
   }
 
-  async getUserForms(userId: string) {
+  async getUserForms(userId: UUidInput) {
     try {
       const forms = await db
         .select({
@@ -217,6 +222,26 @@ export class FormService {
       throw new Error(
         `Failed to delete form: ${error instanceof Error ? error.message : "Unknown error"}`,
       );
+    }
+  }
+
+  async updateStatus(input: UpdateStatusSchema) {
+    const { status, formId, userId, accessCode } = input;
+
+    const form = await this.getOwnedFormOrThrow(userId, formId);
+
+    try {
+      return await db.transaction(async (tx) => {
+        const [updatedForm] = await tx
+          .update(formsTable)
+          .set({ status, accessCode: status === "private" ? accessCode : null })
+          .where(and(eq(formsTable.id, formId), eq(formsTable.createdBy, userId)))
+          .returning();
+
+        return updatedForm;
+      });
+    } catch (error) {
+      throw new Error("Failed to update status!");
     }
   }
 }

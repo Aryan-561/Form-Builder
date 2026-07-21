@@ -1,5 +1,8 @@
 import z from "zod";
-import { createFormBaseSchema as createFormInputModel } from "@repo/validators/src";
+import {
+  createFormBaseSchema as createFormInputModel,
+  updateStatusTypeSchema,
+} from "@repo/validators/src";
 import { updateFormBaseSchema as updateFormInputModel } from "@repo/validators/src";
 
 export { createFormInputModel };
@@ -66,4 +69,20 @@ export const updateFormOutputModel = getUserFormByIdOutputModel.omit({ fields: t
 // --- deleteForm ---
 export const deleteFormOutputModel = z.object({
   success: z.boolean().describe("whether the form was deleted successfully"),
+});
+
+// Plain z.object — no .refine() here because trpc-to-openapi calls .omit()
+// internally when generating the OpenAPI spec and crashes on ZodEffects.
+// Cross-field validation (accessCode required when private) is enforced in the route handler.
+export const updateStatusInputModel = z.object({
+  status: updateStatusTypeSchema,
+  formId: z.uuid(),
+  accessCode: z.string().trim().min(6, "Code will min 6 character").max(18).optional().nullable(),
+});
+
+export const updateStatusOutputModel = z.object({
+  id: z.string(),
+  status: z.enum(["draft", "publish", "private", "unpublish"]),
+  accessCode: z.string().nullable(),
+  updatedAt: z.date(),
 });

@@ -1,6 +1,7 @@
 import { UUidInput } from "@repo/validators/src";
 import { formService } from "../../services";
 import { publicProcedure, router, protectedProcedure } from "../../trpc";
+import { TRPCError } from "@trpc/server";
 import { generatePath } from "../../utils/path-generator";
 import {
   createFormInputModel,
@@ -11,6 +12,8 @@ import {
   updateFormOutputModel,
   deleteFormOutputModel,
   formIdInputModel,
+  updateStatusInputModel,
+  updateStatusOutputModel,
 } from "./model";
 import z from "zod";
 
@@ -86,5 +89,32 @@ export const formRouter = router({
       const userId = ctx.user?.id as UUidInput;
 
       return await formService.deleteForm(userId, input.formId);
+    }),
+
+  updateStatus: protectedProcedure
+    .meta({ openapi: { method: "PATCH", path: getPath("/status"), tags: TAGS } })
+    .input(updateStatusInputModel)
+    .output(updateStatusOutputModel)
+    .mutation(async ({ input, ctx }) => {
+      const userId = ctx.user?.id as UUidInput;
+
+      // Cross-field validation: accessCode is required when status is "private"
+      if (input.status === "private" && !input.accessCode?.trim()) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Access code is required when status is 'private'",
+        });
+      }
+
+      const form = await formService.updateStatus({ ...input, userId });
+      if (!form) {
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Failed to update status." });
+      }
+      return {
+        id: form.id,
+        status: form.status,
+        accessCode: form.accessCode ?? null,
+        updatedAt: form.updatedAt,
+      };
     }),
 });
