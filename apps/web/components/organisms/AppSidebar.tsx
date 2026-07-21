@@ -26,6 +26,7 @@ import Logo from "../logo/logo";
 import { UserMenu } from "./UserMenu";
 import { PlanUsageCard } from "./PlanUsageCard";
 import { useGetPlan, useMe } from "~/hooks/use-user";
+import { CreateFormButton } from "../create-form-button";
 
 const navItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -67,16 +68,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem className="mb-4">
-                <SidebarMenuButton
-                  asChild
-                  tooltip="Create New Form"
-                  className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground font-semibold shadow-sm justify-center group-data-[collapsible=icon]:p-2 group-data-[collapsible=icon]:justify-center"
-                >
-                  <Link href="/builder">
-                    <Plus className="size-4 shrink-0" />
-                    <span className="group-data-[collapsible=icon]:hidden">Create New Form</span>
-                  </Link>
-                </SidebarMenuButton>
+                <CreateFormButton className="w-full bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground font-semibold shadow-sm justify-start group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-2 gap-2" />
               </SidebarMenuItem>
 
               {navItems.map((item) => (

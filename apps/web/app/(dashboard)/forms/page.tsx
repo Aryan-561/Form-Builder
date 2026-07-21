@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { Plus, FileSpreadsheet } from "lucide-react";
-import { Button } from "~/components/ui/button";
+import { FileSpreadsheet } from "lucide-react";
 import { FormCard } from "~/components/organisms/FormCard";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { MOCK_TEMPLATES } from "../templates/page";
 import { TemplateCard } from "~/components/ui/template-card";
+import { CreateFormButton } from "~/components/create-form-button";
 
 // Mock data for UI development before backend integration
 const MOCK_FORMS = [
@@ -53,12 +53,7 @@ export default function FormsPage() {
             {forms ? `${forms.length} form${forms.length !== 1 ? "s" : ""}` : "Manage your forms"}
           </p>
         </div>
-        <Button asChild>
-          <Link href="/builder">
-            <Plus className="size-4 mr-2" />
-            New Form
-          </Link>
-        </Button>
+        <CreateFormButton />
       </div>
 
       {/* Empty state */}
@@ -71,12 +66,7 @@ export default function FormsPage() {
           <p className="text-sm text-muted-foreground mt-1 mb-6 max-w-xs">
             Create your first form to start collecting responses from your audience.
           </p>
-          <Button asChild>
-            <Link href="/builder">
-              <Plus className="size-4 mr-2" />
-              Create your first form
-            </Link>
-          </Button>
+          <CreateFormButton>Create your first form</CreateFormButton>
         </div>
       )}
 

@@ -5,20 +5,20 @@ const useCreateForm = () => {
   return createForm;
 };
 
-// const useGetForm = () => {
-//   const getForm = trpc.form.get.useMutation();
-//   return getForm;
-// };
+const useGetForm = () => {
+  const getForm = trpc.form.getUserFormById.useQuery({ formId });
+  return getForm;
+};
 
-// const useForms = () => {
-//   const getForms = trpc.form.getAll.useQuery();
-//   return getForms;
-// };
+const useForms = () => {
+  const getForms = trpc.form.getUserForms.useQuery();
+  return getForms;
+};
 
-// const useUpdateForm = () => {
-//   const updateForm = trpc.form.update.useMutation();
-//   return updateForm;
-// };
+const useUpdateForm = () => {
+  const updateForm = trpc.form.updateForm.useMutation();
+  return updateForm;
+};
 
 // const useDeleteForm = () => {
 //   const deleteForm = trpc.form.delete.useMutation();
@@ -26,4 +26,4 @@ const useCreateForm = () => {
 // };
 
 // export { useCreateForm, useGetForm, useForms, useUpdateForm, useDeleteForm };
-export { useCreateForm };
+export { useCreateForm, useUpdateForm };

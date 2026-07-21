@@ -37,7 +37,9 @@ export function FormTitleBlock({
             className="font-sans text-4xl font-bold text-foreground cursor-text hover:bg-accent/50 px-3 py-2 -mx-3 rounded transition-colors border border-transparent hover:border-border"
             onClick={() => setIsEditingTitle(true)}
           >
-            {title}
+            {title || (
+              <span className="text-muted-foreground/60">Please Enter Title of your form</span>
+            )}
           </h1>
         )}
 
@@ -55,7 +57,11 @@ export function FormTitleBlock({
             className="text-lg text-muted-foreground cursor-text hover:bg-accent/50 px-3 py-2 -mx-3 rounded transition-colors border border-transparent hover:border-border min-h-[48px]"
             onClick={() => setIsEditingDesc(true)}
           >
-            {description}
+            {description || (
+              <span className="text-muted-foreground/60">
+                Please Enter Description of your form
+              </span>
+            )}
           </p>
         )}
       </div>

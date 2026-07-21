@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import { useState } from "react";
 import { KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { FormElement } from "~/components/Internal/CreateForm/types";
@@ -13,11 +13,12 @@ import Logo from "~/components/logo/logo";
 
 import { Button } from "~/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { Save, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
-import { useCreateForm } from "~/hooks/use-form";
-import { useAutosave } from "~/hooks/use-autosave";
+import { Save, Loader2 } from "lucide-react";
+import { useCreateForm, useUpdateForm } from "~/hooks/use-form";
 import { toast } from "sonner";
-import { cn } from "~/lib/utils";
+
+import { BackButton } from "~/components/ui/navigation-history-buttons";
+import { useParams } from "next/navigation";
 
 // --- Types ---
 
@@ -78,55 +79,6 @@ function buildPayload(
   };
 }
 
-// --- Status indicator component ---
-
-// function SaveStatusIndicator({
-//   status,
-//   lastSavedAt,
-// }: {
-//   status: "idle" | "saving" | "saved" | "error";
-//   lastSavedAt: Date | null;
-// }) {
-//   if (status === "idle") return null;
-
-//   return (
-//     <div
-//       className={cn(
-//         "flex items-center gap-1.5 text-xs font-medium transition-all duration-300",
-//         status === "saving" && "text-muted-foreground",
-//         status === "saved" && "text-emerald-600 dark:text-emerald-400",
-//         status === "error" && "text-destructive",
-//       )}
-//     >
-//       {status === "saving" && (
-//         <>
-//           <Loader2 className="w-3.5 h-3.5 animate-spin" />
-//           <span>Saving…</span>
-//         </>
-//       )}
-//       {status === "saved" && (
-//         <>
-//           <CheckCircle2 className="w-3.5 h-3.5" />
-//           <span>
-//             Saved
-//             {lastSavedAt && (
-//               <span className="text-muted-foreground font-normal ml-1">
-//                 at {lastSavedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-//               </span>
-//             )}
-//           </span>
-//         </>
-//       )}
-//       {status === "error" && (
-//         <>
-//           <AlertCircle className="w-3.5 h-3.5" />
-//           <span>Failed to save</span>
-//         </>
-//       )}
-//     </div>
-//   );
-// }
-
 // --- Main Page ---
 
 export default function BuilderPage() {
@@ -134,77 +86,20 @@ export default function BuilderPage() {
   const [activeElementId, setActiveElementId] = useState<string | null>(null);
   const [formDetails, setFormDetails] = useState({ title: "", description: "" });
 
-  // Stable slug per session — generated once, reused on every save
+  // Stable slug per session — generated once, reused on save
   const [slug] = useState(() => buildSlug("event-registration"));
+  const { id } = useParams();
+  const updateFormMutation = useUpdateForm();
 
-  const createFormMutation = useCreateForm();
-
-  // Build the payload every time form state changes
-  const formPayload = useMemo(
-    () => buildPayload(formDetails.title, formDetails.description, selectedElement, slug),
-    [formDetails.title, formDetails.description, selectedElement, slug],
-  );
-
-  // The save function passed to useAutosave
-  const saveFn = useCallback(
-    async (payload: FormDefinitionPayload) => {
-      await createFormMutation.mutateAsync(payload as any);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
-
-  // --- Autosave ---
-  const DRAFT_STORAGE_KEY = "formcraft:builder:draft";
-
-  const {
-    status: saveStatus,
-    lastSavedAt,
-    saveNow,
-    restoredDraft,
-    clearDraft,
-  } = useAutosave({
-    data: formPayload,
-    saveFn,
-    debounceMs: 3000,
-    enabled: true,
-    storageKey: DRAFT_STORAGE_KEY,
-  });
-
-  // Guard so we only hydrate once even if restoredDraft updates
-  const hasHydratedRef = useRef(false);
-
-  // Hydrate form state from localStorage draft.
-  // restoredDraft arrives asynchronously (client-side useEffect in the hook),
-  // so we depend on it here instead of using an empty deps array.
-  useEffect(() => {
-    if (!restoredDraft || hasHydratedRef.current) return;
-    hasHydratedRef.current = true;
-    setFormDetails({ title: restoredDraft.title, description: restoredDraft.description });
-    // Restore fields with stable uniqueIds
-    const restoredFields = restoredDraft.fields.map((f) => ({
-      id: 0,
-      name: f.label,
-      uniqueId: crypto.randomUUID(),
-      type: f.type as FormElement["type"],
-      label: f.label,
-      placeholder: f.placeholder ?? "",
-      required: f.required ?? false,
-      disabled: false,
-      options: f.options?.map((o) => ({ label: o, value: o })),
-    }));
-    setSelectedElement(restoredFields);
-  }, [restoredDraft]);
-
-  // Manual save button handler (saves immediately then clears draft)
+  // Manual save button handler
   const handleManualSave = async () => {
-    try {
-      await saveNow();
-      clearDraft();
-      toast.success("Form saved!");
-    } catch {
-      toast.error("Failed to save form.");
-    }
+    const payload = buildPayload(formDetails.title, formDetails.description, selectedElement, slug);
+
+    await toast.promise(updateFormMutation.mutateAsync({ ...payload, formId: id } as any), {
+      loading: "Saving form...",
+      success: "Form saved successfully!",
+      error: "Failed to save form.",
+    });
   };
 
   // --- DnD ---
@@ -276,24 +171,33 @@ export default function BuilderPage() {
       <main className="ml-72 mr-72 flex-1 flex flex-col h-screen">
         {/* Sticky Action Bar */}
         <div className="bg-muted/50 border-b py-2 px-8 flex items-center justify-between gap-3">
-          {/* Autosave status (left) */}
-          {/* <SaveStatusIndicator status={saveStatus} lastSavedAt={lastSavedAt} /> */}
+          {/* History navigation buttons (left) */}
+          <BackButton fallbackUrl="/dashboard" />
 
           {/* Manual save button (right) */}
           <Button
             onClick={handleManualSave}
-            disabled={saveStatus === "saving"}
+            disabled={updateFormMutation.isPending}
             variant="outline"
             className="font-semibold"
             size="sm"
           >
-            <Save className="w-4 h-4 mr-2" />
-            {saveStatus === "saving" ? "Saving…" : "Save"}
+            {updateFormMutation.isPending ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Saving…
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4 mr-2" />
+                Save
+              </>
+            )}
           </Button>
         </div>
 
         <div className="flex-1 overflow-y-auto p-8 relative">
-          <div className="max-w-[800px] mx-auto pb-32">
+          <div className="max-w-200 mx-auto pb-32">
             <FormTitleBlock
               title={formDetails.title}
               description={formDetails.description}
