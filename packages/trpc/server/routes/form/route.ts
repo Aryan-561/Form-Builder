@@ -1,8 +1,8 @@
 import { formService } from "../../services";
 import { publicProcedure, router } from "../../trpc";
 import { generatePath } from "../../utils/path-generator";
-import { createFormInputModel, createFormOutputModel } from "./model";
-
+import { createFormInputModel, createFormOutputModel, getUserFormsOutputModel } from "./model";
+import z from "zod";
 
 const TAGS = ["Form"];
 const getPath = generatePath("/form");
@@ -13,8 +13,7 @@ export const formRouter = router({
     .input(createFormInputModel)
     .output(createFormOutputModel)
     .mutation(async ({ input, ctx }) => {
-      // TODO: replace with authenticated user id once auth middleware is wired up
-      const userId = "temp-user-id";
+      const userId = ctx.user?.id as string;
 
       const form = await formService.createForm(userId, input);
 
@@ -25,5 +24,15 @@ export const formRouter = router({
         status: form.status,
         createdAt: form.createdAt,
       };
+    }),
+
+  getUserForms: publicProcedure
+    .meta({ openapi: { method: "GET", path: getPath("/list"), tags: TAGS } })
+    .input(z.void())
+    .output(getUserFormsOutputModel)
+    .query(async ({ ctx }) => {
+      const userId = ctx.user?.id as string;
+
+      return await formService.getUserForms(userId);
     }),
 });
