@@ -91,7 +91,7 @@ export class FormService {
   }
 
   async updateForm(userId: UUidInput, input: UpdateFormInput) {
-    const existingForm = await this.getOwnedFormOrThrow(input.id, userId);
+    const existingForm = await this.getOwnedFormOrThrow(userId, input.id);
 
     const normalizedFields = this.normalizeFields(input.fields);
 
