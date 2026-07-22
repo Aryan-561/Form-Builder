@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { MoreHorizontal, Pencil, Eye, Trash2, BarChart2, MoreVertical } from "lucide-react";
+import { MoreVertical, Pencil, Eye, Trash2, BarChart2, Calendar } from "lucide-react";
 
 import { Card } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
@@ -15,6 +15,7 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { cn } from "~/lib/utils";
+import { useDeleteForm } from "~/hooks/use-form";
 
 interface FormCardProps {
   id: string;
@@ -28,33 +29,29 @@ interface FormCardProps {
 const statusConfig = {
   draft: {
     label: "Draft",
-    className: "border-zinc-200 text-zinc-600 dark:border-zinc-700 dark:text-zinc-400",
+    className:
+      "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700",
   },
   publish: {
     label: "Published",
-    className: "border-emerald-200 text-emerald-600 dark:border-emerald-800 dark:text-emerald-400",
+    className:
+      "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-800/60",
   },
   private: {
     label: "Private",
-    className: "border-amber-200 text-amber-600 dark:border-amber-800 dark:text-amber-400",
+    className:
+      "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800/60",
   },
   unpublish: {
     label: "Unpublished",
-    className: "border-zinc-200 text-zinc-600 dark:border-zinc-700 dark:text-zinc-400",
+    className:
+      "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700",
   },
 } as const;
-
-function formatDate(date: Date) {
-  return new Date(date).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
-}
 
 function formatUpdated(date: Date) {
   const now = new Date();
   const target = new Date(date);
-
   const diff = now.getTime() - target.getTime();
 
   const minutes = Math.floor(diff / 60000);
@@ -64,34 +61,27 @@ function formatUpdated(date: Date) {
   if (minutes < 1) return "Just now";
   if (minutes < 60) return `${minutes}m ago`;
   if (hours < 24) return `${hours}h ago`;
-
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-
-  if (target.toDateString() === yesterday.toDateString()) {
-    return "Yesterday";
-  }
-
-  if (days < 7) {
-    return target.toLocaleDateString("en-US", {
-      weekday: "long",
-    });
-  }
+  if (days < 7) return `${days}d ago`;
 
   return target.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
-    year: "numeric",
   });
 }
 
 export function FormCard({ id, title, description, status, createdAt, updatedAt }: FormCardProps) {
   const router = useRouter();
+  const deleteFormMutation = useDeleteForm();
 
   const statusMeta = statusConfig[status];
 
-  const handleDelete = () => {
-    toast.success("Form deleted (Mock)");
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    toast.promise(deleteFormMutation.mutateAsync({ formId: id }), {
+      loading: "Deleting form...",
+      success: "Form deleted successfully!",
+      error: (err) => err?.message || "Failed to delete form.",
+    });
   };
 
   return (
@@ -99,23 +89,27 @@ export function FormCard({ id, title, description, status, createdAt, updatedAt 
       onClick={() => router.push(`/builder/${id}`)}
       className="
         group
+        relative
         cursor-pointer
-        rounded-2xl
+        rounded-xl
         border
-        border-border/70
-        bg-background
-        p-7
+        border-slate-200/80
+        dark:border-slate-800
+        bg-white
+        dark:bg-slate-900
+        p-6
         shadow-none
         transition-all
         duration-200
-        hover:border-primary/30
+        hover:border-blue-500/40
+        hover:shadow-xs
       "
     >
-      <div className="flex items-start justify-between">
+      <div className="flex items-center justify-between gap-2">
         <Badge
           variant="outline"
           className={cn(
-            "rounded-lg border px-2.5 py-1 text-[11px] font-medium",
+            "rounded-md border px-2.5 py-0.5 text-xs font-medium tracking-tight",
             statusMeta.className,
           )}
         >
@@ -128,65 +122,63 @@ export function FormCard({ id, title, description, status, createdAt, updatedAt 
               variant="ghost"
               size="icon"
               onClick={(e) => e.stopPropagation()}
-              className="
-                size-8
-                rounded-lg
-             
-              "
+              className="size-8 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
             >
               <MoreVertical className="size-4" />
             </Button>
           </DropdownMenuTrigger>
 
-          <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()} className="w-44">
-            <DropdownMenuItem onClick={() => router.push(`/builder?id=${id}`)}>
-              <Pencil className="mr-2 size-4" />
+          <DropdownMenuContent
+            align="end"
+            onClick={(e) => e.stopPropagation()}
+            className="w-40 rounded-lg"
+          >
+            <DropdownMenuItem onClick={() => router.push(`/builder/${id}`)}>
+              <Pencil className="mr-2 size-4 text-blue-600" />
               Edit
             </DropdownMenuItem>
 
-            <DropdownMenuItem onClick={() => router.push(`/forms/${id}/preview`)}>
-              <Eye className="mr-2 size-4" />
+            <DropdownMenuItem onClick={() => router.push(`/p/${id}`)}>
+              <Eye className="mr-2 size-4 text-slate-500" />
               Preview
             </DropdownMenuItem>
 
-            <DropdownMenuItem onClick={() => router.push(`/analytics?formId=${id}`)}>
-              <BarChart2 className="mr-2 size-4" />
+            <DropdownMenuItem onClick={() => router.push(`/a/${id}`)}>
+              <BarChart2 className="mr-2 size-4 text-slate-500" />
               Analytics
             </DropdownMenuItem>
 
             <DropdownMenuSeparator />
 
             <DropdownMenuItem
-              className="text-destructive focus:text-destructive"
+              className="text-red-600 focus:text-red-600 dark:text-red-400"
+              disabled={deleteFormMutation.isPending}
               onClick={handleDelete}
             >
               <Trash2 className="mr-2 size-4" />
-              Delete
+              {deleteFormMutation.isPending ? "Deleting..." : "Delete"}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
 
-      <div className="mt-6">
-        <h3 className="line-clamp-1 text-xl font-semibold tracking-tight">{title}</h3>
+      <div className="mt-5 space-y-1.5">
+        <h3 className="line-clamp-1 text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors">
+          {title}
+        </h3>
 
-        <p className="mt-3 min-h-12 line-clamp-2 text-sm leading-6 text-muted-foreground">
+        <p className="line-clamp-2 text-sm leading-relaxed text-slate-500 dark:text-slate-400 min-h-[2.5rem]">
           {description || "No description provided."}
         </p>
       </div>
 
-      <div className="mt-8 border-t pt-5">
-        <div className="flex items-start justify-between text-xs">
-          <div className="space-y-1">
-            <p className="text-muted-foreground">Created</p>
-            <p className="font-medium text-foreground">{formatDate(createdAt)}</p>
-          </div>
-
-          <div className="space-y-1 text-right">
-            <p className="text-muted-foreground">Updated</p>
-            <p className="font-medium text-foreground">{formatUpdated(updatedAt)}</p>
-          </div>
-        </div>
+      <div className="mt-6 border-t border-slate-100 dark:border-slate-800/80 pt-4 flex items-center justify-between text-xs text-slate-400 dark:text-slate-500">
+        <span className="flex items-center gap-1">
+          <Calendar className="size-3.5" /> Updated {formatUpdated(updatedAt)}
+        </span>
+        <span className="text-blue-600 dark:text-blue-400 font-medium text-[11px] opacity-0 group-hover:opacity-100 transition-opacity">
+          Open Builder →
+        </span>
       </div>
     </Card>
   );

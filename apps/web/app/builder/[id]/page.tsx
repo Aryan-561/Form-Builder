@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { FormElement } from "~/components/Internal/CreateForm/types";
@@ -14,7 +14,7 @@ import Logo from "~/components/logo/logo";
 import { Button } from "~/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Save, Loader2 } from "lucide-react";
-import { useCreateForm, useUpdateForm } from "~/hooks/use-form";
+import { useCreateForm, useForm, useUpdateForm } from "~/hooks/use-form";
 import { toast } from "sonner";
 
 import { BackButton } from "~/components/ui/navigation-history-buttons";
@@ -82,20 +82,51 @@ function buildPayload(
 // --- Main Page ---
 
 export default function BuilderPage() {
+  const { id } = useParams();
+  const { data: form, isLoading: isLoadingForm } = useForm(id as string);
+  // Main form states
   const [selectedElement, setSelectedElement] = useState<FormElement[]>([]);
   const [activeElementId, setActiveElementId] = useState<string | null>(null);
   const [formDetails, setFormDetails] = useState({ title: "", description: "" });
-
-  // Stable slug per session — generated once, reused on save
-  const [slug] = useState(() => buildSlug("event-registration"));
-  const { id } = useParams();
+  const [slug, setSlug] = useState(() => buildSlug("event-registration"));
   const updateFormMutation = useUpdateForm();
+
+  // Pre-load data from DB if it exists
+  const [hasHydrated, setHasHydrated] = useState(false);
+
+  useEffect(() => {
+    if (form && !hasHydrated) {
+      setFormDetails({
+        title: form.title || "",
+        description: form.description || "",
+      });
+      if (form.slug) {
+        setSlug(form.slug);
+      }
+      if (form.fields && form.fields.length > 0) {
+        const restoredFields = form.fields.map((f: any) => ({
+          id: 0,
+          name: f.label,
+          uniqueId: f.id || crypto.randomUUID(),
+          type: f.type as FormElement["type"],
+          label: f.label,
+          placeholder: f.placeholder ?? "",
+          required: f.required ?? false,
+          disabled: false,
+          options: f.options?.map((o: string) => ({ label: o, value: o })) || [],
+        }));
+        setSelectedElement(restoredFields);
+      }
+      setHasHydrated(true);
+    }
+  }, [form, hasHydrated]);
 
   // Manual save button handler
   const handleManualSave = async () => {
     const payload = buildPayload(formDetails.title, formDetails.description, selectedElement, slug);
-
-    await toast.promise(updateFormMutation.mutateAsync({ ...payload, formId: id } as any), {
+    console.log(payload);
+    console.log(id);
+    await toast.promise(updateFormMutation.mutateAsync({ ...payload, id: id } as any), {
       loading: "Saving form...",
       success: "Form saved successfully!",
       error: "Failed to save form.",

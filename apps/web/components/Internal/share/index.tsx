@@ -22,7 +22,7 @@ export function ShareModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =
         <DialogHeader className="p-6 pb-4 border-b border-border text-left">
           <DialogTitle className="text-xl font-bold">Share your form</DialogTitle>
           <DialogDescription className="text-sm text-muted-foreground mt-1">
-            Choose how you want people to access your content.
+            Choose how you want people to access your form.
           </DialogDescription>
         </DialogHeader>
 

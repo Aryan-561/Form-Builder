@@ -1,8 +1,8 @@
 import { Info } from "lucide-react";
 
 interface ShareModalLeftSideProps {
-  status: "draft" | "public" | "private";
-  setStatus: (status: "draft" | "public" | "private") => void;
+  status: "unpublish" | "publish" | "private";
+  setStatus: (status: "unpublish" | "publish" | "private") => void;
 }
 
 export function ShareModalLeftSide({ status, setStatus }: ShareModalLeftSideProps) {
@@ -12,9 +12,9 @@ export function ShareModalLeftSide({ status, setStatus }: ShareModalLeftSideProp
         <h3 className="text-sm font-medium mb-3 text-foreground">Publish Status</h3>
         <div className="flex items-center p-1 bg-muted/60 rounded-xl w-full border border-border/50">
           <button
-            onClick={() => setStatus("draft")}
+            onClick={() => setStatus("unpublish")}
             className={`flex-1 text-sm font-medium py-1.5 rounded-lg transition-all ${
-              status === "draft"
+              status === "unpublish"
                 ? "bg-background shadow-sm text-foreground"
                 : "text-muted-foreground hover:text-foreground"
             }`}
@@ -50,8 +50,8 @@ export function ShareModalLeftSide({ status, setStatus }: ShareModalLeftSideProp
           {status === "draft"
             ? "Your form is currently in draft. It is not accessible to anyone."
             : status === "public"
-            ? "Your form is currently live and collecting responses."
-            : "Your form is private. Only specific people can access it."}
+              ? "Your form is currently live and collecting responses."
+              : "Your form is private. Only specific people can access it."}
         </div>
       </div>
     </div>

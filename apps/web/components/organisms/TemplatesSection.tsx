@@ -1,59 +1,90 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
+"use client";
+
+import Link from "next/link";
+import { ArrowRight, LayoutTemplate } from "lucide-react";
 import { Button } from "~/components/ui/button";
 
-export function TemplatesSection() {
-  const templates = [
-    {
-      title: "Event RSVP",
-      desc: "Perfect for weddings & conferences",
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAWfGh0h3xOWR-hEWFPCtb7ObF6zzTkUs1nlkqle-4AV9fUnXFL99GL1180MuLrQCLFYNuyKHBu1_ahHzs57a5DaurB_amd708oTnEl_O9sZhVBiIutjP1quD4uwTOeZrViqL5NDM3FvCZQ8htaE_Jsv59qBHeMVy0nagGPqto7XU7hC_0UeFLT56yfLgIsd2c_erWfLQ2Kz6ra0KXM09yBgWfopLWoNQnas6FfnNzbyZ-3Qd7VZ_rTmGxZBjyzd1MOO_ozh5omK9vF"
-    },
-    {
-      title: "Product Feedback",
-      desc: "Drive product growth with insights",
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDfEOzjYg0E8ickJpi72ECpLIkFGD2rXcqaf4tBvhqtVNRhcqDgcWtwvBVP4DqWi5Pn7XMlL8NeLqeSGls4oZfJUiII9v5Nzzfh_J8MCwAVYYHxL0sJ5ha-GjJZgj7T4tqPnhUW0-2b8vfNTROZnzRVwf2Jo_lMO5rSSdcgWmTHGDZUTrpZp7WP2y2Qf0HTSNLj_s9Rt4qUlcM1c__TJxImGeie9CHI0S83wZ635r9iRedlPoLt5NZx9JxiLJEvfjyt8zehnTHJdzOa"
-    },
-    {
-      title: "Support Ticket",
-      desc: "Streamline your customer helpdesk",
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCOnIfLBPsBSmWdVjtEVT5lA_14SKv6jX07onHeRf8csCzDdqcPX-VoFHOPBxoihXZoZwQYfYAV6YB4OSm65o6fXa0rva3GmE_x3svwNsmhap0vA5_vGyhQAUQhScOwxZ_u1VsYayTYNTFCKvOe-fkBpKwsSwEL35ZdgJPk01MxxQ9CAHukd5TlGX3pbxY6HM5lmeXx72EKJroRiFztALqU1ykmfLKhircpuU31LwVHTfxylleIgn_B3SJ6ZczNHJPJKWPx8XTF0Cl0"
-    }
-  ];
+const templates = [
+  {
+    title: "Event Registration & RSVP",
+    category: "Events",
+    description:
+      "Capture attendee details, track session preferences, and manage headcount effortlessly.",
+  },
+  {
+    title: "Customer Satisfaction Survey",
+    category: "Feedback",
+    description:
+      "Gather feedback with star ratings, multi-choice metrics, and open-ended text areas.",
+  },
+  {
+    title: "Support & Helpdesk Request",
+    category: "Support",
+    description:
+      "Triage incoming tickets with category selectors, file inputs, and contact fields.",
+  },
+];
 
+export function TemplatesSection() {
   return (
-    <section className="py-20 overflow-hidden px-4 md:px-10 bg-background" id="templates">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-          <div className="max-w-xl">
-            <h2 className="font-sans text-3xl font-semibold text-foreground mb-4">Ready-to-use Templates</h2>
-            <p className="font-sans text-base text-muted-foreground">
-              Jumpstart your workflow with these conversion-optimized layouts. Fully customizable to match your brand identity.
+    <section
+      className="py-24 px-6 bg-[#FAFBFC] dark:bg-slate-950 border-b border-slate-200/60 dark:border-slate-800/60"
+      id="templates"
+    >
+      <div className="max-w-6xl mx-auto space-y-16">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 border-b border-slate-200/80 dark:border-slate-800 pb-8">
+          <div className="space-y-2 max-w-xl">
+            <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+              Start with pre-built templates
+            </h2>
+            <p className="text-base text-slate-600 dark:text-slate-400">
+              Conversion-optimized layouts ready for immediate customization.
             </p>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" size="icon" className="rounded-full">
-              <ChevronLeft className="w-5 h-5" />
-            </Button>
-            <Button variant="outline" size="icon" className="rounded-full">
-              <ChevronRight className="w-5 h-5" />
-            </Button>
-          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-lg border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-medium text-xs h-9"
+            asChild
+          >
+            <Link href="/templates">
+              Browse All Templates <ArrowRight className="ml-1.5 size-3.5" />
+            </Link>
+          </Button>
         </div>
-        <div className="flex gap-6 overflow-x-auto pb-8 snap-x">
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {templates.map((tpl, i) => (
-            <div key={i} className="min-w-[300px] md:min-w-[400px] snap-start">
-              <div className="group relative aspect-[4/3] rounded-2xl overflow-hidden mb-4 shadow-md bg-muted">
-                <img 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                  alt={tpl.title} 
-                  src={tpl.image} 
-                />
-                <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <Button className="bg-white text-primary hover:bg-white/90 font-bold shadow-lg">Use Template</Button>
+            <div
+              key={i}
+              className="group rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 space-y-4 flex flex-col justify-between hover:border-blue-500/40 transition-colors"
+            >
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
+                    {tpl.category}
+                  </span>
+                  <LayoutTemplate className="size-4 text-slate-400" />
                 </div>
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors">
+                  {tpl.title}
+                </h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                  {tpl.description}
+                </p>
               </div>
-              <h4 className="font-sans text-xl font-semibold text-foreground">{tpl.title}</h4>
-              <p className="font-sans text-sm text-muted-foreground">{tpl.desc}</p>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full justify-between text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 p-0 h-8"
+                asChild
+              >
+                <Link href="/signup">
+                  <span>Use Template</span>
+                  <ArrowRight className="size-3.5" />
+                </Link>
+              </Button>
             </div>
           ))}
         </div>

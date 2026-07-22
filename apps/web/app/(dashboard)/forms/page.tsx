@@ -3,45 +3,16 @@
 import Link from "next/link";
 import { FileSpreadsheet } from "lucide-react";
 import { FormCard } from "~/components/organisms/FormCard";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { MOCK_TEMPLATES } from "../templates/page";
 import { TemplateCard } from "~/components/ui/template-card";
 import { CreateFormButton } from "~/components/create-form-button";
 
-// Mock data for UI development before backend integration
-const MOCK_FORMS = [
-  {
-    id: "1",
-    title: "Event Registration Form",
-    description: "Form for the upcoming tech conference registration.",
-    status: "publish" as const,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 2),
-  },
-  {
-    id: "2",
-    title: "Customer Feedback",
-    description: "Quarterly customer satisfaction survey.",
-    status: "draft" as const,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 10),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1),
-  },
-  {
-    id: "3",
-    title: "Internal Onboarding",
-    description: "New employee onboarding questionnaire.",
-    status: "private" as const,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 20),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5),
-  },
-];
+import { useForms } from "~/hooks/use-form";
 
 export default function FormsPage() {
   const router = useRouter();
-  const [forms] = useState(MOCK_FORMS);
-  const isLoading = false;
-  const isError = false;
+  const { data: forms, isLoading, isError } = useForms();
 
   return (
     <div className="space-y-6">
@@ -50,7 +21,11 @@ export default function FormsPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">My Forms</h1>
           <p className="text-muted-foreground mt-1">
-            {forms ? `${forms.length} form${forms.length !== 1 ? "s" : ""}` : "Manage your forms"}
+            {isLoading
+              ? "Loading forms..."
+              : forms
+                ? `${forms.length} form${forms.length !== 1 ? "s" : ""}`
+                : "Manage your forms"}
           </p>
         </div>
         <CreateFormButton />

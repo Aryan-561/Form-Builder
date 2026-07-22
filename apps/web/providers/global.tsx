@@ -8,6 +8,8 @@ import { Toaster } from "~/components/ui/sonner";
 import { trpc } from "~/trpc/client";
 import { createTRPCHttpBatchClientClient } from "~/trpc/create-client";
 
+import { SmoothScrollProvider } from "./smooth-scroll-provider";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -32,8 +34,10 @@ export const GlobalProviders: React.FC<{ children: React.ReactNode }> = ({ child
         disableTransitionOnChange
       >
         <trpc.Provider queryClient={queryClient} client={trpcClient}>
-          {children}
-          <Toaster />
+          <SmoothScrollProvider>
+            {children}
+            <Toaster />
+          </SmoothScrollProvider>
         </trpc.Provider>
       </NextThemesProvider>
     </QueryClientProvider>
