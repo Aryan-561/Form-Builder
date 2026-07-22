@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { LogOut, Settings, CreditCard, LayoutTemplate, Eye } from "lucide-react";
+import { LogOut, Settings, CreditCard } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,

@@ -34,6 +34,7 @@ export function ShareModalRightSide({ isEnabled }: ShareModalRightSideProps) {
       toast.success("Link copied to clipboard!");
     } catch (error) {
       toast.error("Failed to copy link");
+      console.log(error);
     }
   };
 

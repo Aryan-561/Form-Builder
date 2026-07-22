@@ -2,15 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  FileSpreadsheet,
-  LayoutTemplate,
-  BarChart2,
-  Plus,
-  Palette,
-  Settings,
-} from "lucide-react";
+import { LayoutDashboard, FileSpreadsheet, LayoutTemplate, BarChart2 } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,

@@ -4,14 +4,12 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { Button } from "~/components/ui/button";
-import DotField from "~/components/DotField";
 import {
   ArrowRight,
   Check,
   Sparkles,
   KeyRound,
   ShieldCheck,
-  Wand2,
   Lock,
   Type,
   Mail,
@@ -30,7 +28,6 @@ import {
 
 // Realistic FormCanvas IDE Interface Mockup Component
 function FormCanvasIdePreview() {
-  const [activeTab, setActiveTab] = useState("builder");
   const [isChecked, setIsChecked] = useState(true);
 
   // Periodic Checkbox Ticking Loop

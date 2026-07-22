@@ -1,6 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
 import { createClient } from "~/lib/supabase/client";
-import { trpc } from "~/trpc/client";
 import type {
   SignInWithPasswordCredentials,
   SignUpWithPasswordCredentials,
@@ -8,7 +7,6 @@ import type {
 
 export const useSignUp = () => {
   const supabase = createClient();
-  const utils = trpc.useUtils();
 
   return useMutation({
     mutationFn: async (credentials: SignUpWithPasswordCredentials) => {

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ArrowUpRight } from "lucide-react";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "~/components/ui/card";
+import { Card, CardContent, CardTitle } from "~/components/ui/card";
 import { UsageProgress } from "~/components/ui/usage-progress";
 import { cn } from "~/lib/utils";
 

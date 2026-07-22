@@ -14,7 +14,7 @@ import Logo from "~/components/logo/logo";
 import { Button } from "~/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Save, Loader2 } from "lucide-react";
-import { useCreateForm, useForm, useUpdateForm } from "~/hooks/use-form";
+import { useForm, useUpdateForm } from "~/hooks/use-form";
 import { toast } from "sonner";
 
 import { BackButton } from "~/components/ui/navigation-history-buttons";
@@ -88,14 +88,13 @@ function buildPayload(
 export default function BuilderPage() {
   const { id } = useParams();
   const { data: form, isLoading: isLoadingForm } = useForm(id as string);
+  const updateFormMutation = useUpdateForm();
+
   // Main form states
   const [selectedElement, setSelectedElement] = useState<FormElement[]>([]);
   const [activeElementId, setActiveElementId] = useState<string | null>(null);
   const [formDetails, setFormDetails] = useState({ title: "", description: "" });
-  const [slug, setSlug] = useState(() => buildSlug("event-registration"));
-  const updateFormMutation = useUpdateForm();
-
-  // Pre-load data from DB if it exists
+  const [slug, setSlug] = useState(() => buildSlug(formDetails.title));
   const [hasHydrated, setHasHydrated] = useState(false);
 
   useEffect(() => {
@@ -177,9 +176,11 @@ export default function BuilderPage() {
     <div className="min-h-screen flex bg-background">
       {/* Left Sidebar */}
       <aside className="w-72 min-w-[288px] h-screen fixed left-0 top-0 bg-card border-r border-border shadow-sm flex flex-col z-50">
-        <Logo />
-        <Tabs defaultValue="fields" className="flex flex-col h-full">
-          <div className="px-4 pb-2 shrink-0 border-b border-border">
+        <div className="p-2">
+          <Logo />
+        </div>
+        <Tabs defaultValue="fields" className="flex flex-col h-full ">
+          <div className="px-4  shrink-0 ">
             <TabsList className="w-full grid grid-cols-2">
               <TabsTrigger value="fields">Fields</TabsTrigger>
               <TabsTrigger value="structure">Re-order</TabsTrigger>
@@ -187,7 +188,7 @@ export default function BuilderPage() {
           </div>
           <TabsContent
             value="fields"
-            className="flex-1 min-h-0 mt-0 data-[state=active]:flex flex-col overflow-y-auto"
+            className="flex-1 min-h-0 mt-0 data-[state=active]:flex flex-col overflow-y-auto bg-muted rounded-md p-2"
           >
             <BasicFieldsSidebar onClickElement={onClickElement} />
           </TabsContent>
@@ -206,9 +207,7 @@ export default function BuilderPage() {
 
       {/* Main Builder Canvas */}
       <main className="ml-72 mr-72 flex-1 flex flex-col h-screen overflow-hidden">
-        {/* Sticky Action Bar */}
         <div className="bg-muted/50 border-b py-2 px-8 flex items-center justify-between gap-3 shrink-0">
-          {/* History navigation buttons (left) */}
           <BackButton fallbackUrl="/dashboard" />
 
           {/* Manual save button (right) */}

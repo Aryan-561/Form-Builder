@@ -11,7 +11,10 @@ const useCreateForm = () => {
 };
 
 const useForm = (formId: string) => {
-  const getForm = trpc.form.getUserFormById.useQuery({ formId });
+  const getForm = trpc.form.getUserFormById.useQuery(
+    { formId },
+    { refetchOnWindowFocus: true, staleTime: 0 },
+  );
   return getForm;
 };
 

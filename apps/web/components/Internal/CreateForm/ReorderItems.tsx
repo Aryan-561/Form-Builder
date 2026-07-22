@@ -7,7 +7,7 @@ import {
 } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, List } from "lucide-react";
+import { GripVertical } from "lucide-react";
 import { FormElement } from "./types";
 
 function SortableStructureItem({ element }: { element: FormElement }) {
@@ -48,7 +48,7 @@ interface ReorderItemsProps {
 
 export function ReorderItems({ selectedElement, sensors, handleDragEnd }: ReorderItemsProps) {
   return (
-    <div className="flex-1 flex flex-col min-h-0 bg-card z-50 pt-4">
+    <div className="flex-1 flex flex-col min-h-0 bg-muted p-2 rounded-md m-2 z-50 ">
       <div className="flex-1 overflow-y-auto px-4">
         <div className="space-y-2 flex flex-col">
           <DndContext
