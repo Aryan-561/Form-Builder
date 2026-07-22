@@ -54,7 +54,7 @@ export default function TemplatesPage() {
             key={template.id}
             title={template.title}
             description={template.description}
-            onClick={() => router.push(`/builder/${template.id}`)}
+            onClick={() => router.push(`/b/${template.id}`)}
           />
         ))}
       </div>

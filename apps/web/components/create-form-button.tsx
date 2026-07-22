@@ -22,7 +22,7 @@ export function CreateFormButton({ children, disabled, className, ...props }: Bu
         description: "",
       });
 
-      router.push(`/builder/${data.id}`);
+      router.push(`/b/${data.id}`);
     } catch (error) {
       toast.error("Failed to create form");
       console.error(error);

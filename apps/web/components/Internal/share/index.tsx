@@ -14,14 +14,12 @@ import { Button } from "~/components/ui/button";
 import { ShareModalLeftSide, FormStatusType } from "./left-side";
 import { ShareModalRightSide } from "./right-side";
 import { useForm, useUpdateStatus } from "~/hooks/use-form";
-import { useAlert } from "~/hooks/use-alert";
 
 export function ShareModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const { id } = useParams();
   const formId = id as string;
   const { data: formData } = useForm(formId);
   const updateStatusMutation = useUpdateStatus();
-  const alert = useAlert();
 
   const [status, setStatus] = useState<FormStatusType>("publish");
   const [accessCode, setAccessCode] = useState("");
@@ -45,32 +43,12 @@ export function ShareModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =
       return;
     }
 
-    try {
-      await alert.promise({
-        variant:
-          status === "publish"
-            ? "publish"
-            : status === "unpublish" || status === "draft"
-              ? "unpublish"
-              : "update",
-        title: "Update Form Status?",
-        description: `Are you sure you want to change this form's status to "${status}"?`,
-        confirmText: "Update Status",
-        action: () =>
-          updateStatusMutation.mutateAsync({
-            formId,
-            status: status as any,
-            accessCode: status === "private" ? accessCode.trim() : null,
-          }),
-        success: "Form status updated successfully!",
-        error: (err) => err?.message || "Failed to update status",
-        onSuccess: () => {
-          onClose();
-        },
-      });
-    } catch {
-      // User cancelled
-    }
+    updateStatusMutation.mutate({
+      formId,
+      status: status as any,
+      accessCode: status === "private" ? accessCode.trim() : null,
+    });
+    onClose();
   };
 
   return (

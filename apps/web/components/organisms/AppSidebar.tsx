@@ -29,10 +29,10 @@ import { useGetPlan, useMe } from "~/hooks/use-user";
 import { CreateFormButton } from "../create-form-button";
 
 const navItems = [
-  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-  { title: "My Forms", url: "/forms", icon: FileSpreadsheet },
-  { title: "Templates", url: "/templates", icon: LayoutTemplate },
-  { title: "Analytics", url: "/analytics", icon: BarChart2 },
+  { title: "Dashboard", url: "/d", icon: LayoutDashboard },
+  { title: "My Forms", url: "/f", icon: FileSpreadsheet },
+  { title: "Templates", url: "/t", icon: LayoutTemplate },
+  { title: "Analytics", url: "/a", icon: BarChart2 },
 ];
 
 export function AppSidebar() {

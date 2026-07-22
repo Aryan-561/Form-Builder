@@ -4,7 +4,7 @@ import Link from "next/link";
 import { FileSpreadsheet } from "lucide-react";
 import { FormCard } from "~/components/organisms/FormCard";
 import { useRouter } from "next/navigation";
-import { MOCK_TEMPLATES } from "../templates/page";
+import { MOCK_TEMPLATES } from "../t/page";
 import { TemplateCard } from "~/components/ui/template-card";
 import { CreateFormButton } from "~/components/create-form-button";
 
@@ -52,7 +52,7 @@ export default function FormsPage() {
             <TemplateCard
               title={template.title}
               description={template.description}
-              onClick={() => router.push(`/builder/${template.id}`)}
+              onClick={() => router.push(`/b/${template.id}`)}
             />
           </div>
         ))}

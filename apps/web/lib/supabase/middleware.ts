@@ -13,9 +13,7 @@ export async function updateSession(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value),
-          );
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
           supabaseResponse = NextResponse.next({ request });
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options),
@@ -34,9 +32,7 @@ export async function updateSession(request: NextRequest) {
 
   const isAuthRoute = pathname.startsWith("/login") || pathname.startsWith("/signup");
   const isProtectedRoute =
-    pathname.startsWith("/dashboard") ||
-    pathname.startsWith("/builder") ||
-    pathname.startsWith("/analytics");
+    pathname.startsWith("/a") || pathname.startsWith("/b") || pathname.startsWith("/a");
 
   // Redirect unauthenticated users trying to access protected routes
   if (!user && isProtectedRoute) {
@@ -48,7 +44,7 @@ export async function updateSession(request: NextRequest) {
   // Redirect authenticated users away from auth routes
   if (user && isAuthRoute) {
     const url = request.nextUrl.clone();
-    url.pathname = "/dashboard";
+    url.pathname = "/d";
     return NextResponse.redirect(url);
   }
 

@@ -79,19 +79,14 @@ export function UserMenu({ name, email, plan, credits, usedForms, maxForms }: Us
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
-            <Link href="/settings">
+            <Link href="/s">
               <Settings className="mr-2 size-4" />
               <span>Settings</span>
             </Link>
           </DropdownMenuItem>
+
           <DropdownMenuItem asChild>
-            <Link href="/settings/appearance">
-              <Eye className="mr-2 size-4" />
-              <span>Appearance</span>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link href="/billing">
+            <Link href="/b">
               <CreditCard className="mr-2 size-4" />
               <span>Billing</span>
             </Link>

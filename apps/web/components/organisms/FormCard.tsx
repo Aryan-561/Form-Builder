@@ -16,7 +16,6 @@ import {
 import { toast } from "sonner";
 import { cn } from "~/lib/utils";
 import { useDeleteForm } from "~/hooks/use-form";
-import { useAlert } from "~/hooks/use-alert";
 
 interface FormCardProps {
   id: string;
@@ -73,30 +72,15 @@ function formatUpdated(date: Date) {
 export function FormCard({ id, title, description, status, createdAt, updatedAt }: FormCardProps) {
   const router = useRouter();
   const deleteFormMutation = useDeleteForm();
-  const alert = useAlert();
 
   const statusMeta = statusConfig[status];
-
-  const handleDelete = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    try {
-      await alert.promise({
-        variant: "delete",
-        title: "Delete Form?",
-        description: `Are you sure you want to delete "${title}"? This action cannot be undone and will permanently remove all form fields.`,
-        confirmText: "Delete Form",
-        action: () => deleteFormMutation.mutateAsync({ formId: id }),
-        success: "Form deleted successfully.",
-        error: "Failed to delete form.",
-      });
-    } catch {
-      // User cancelled or error caught
-    }
+  const handleDelete = () => {
+    deleteFormMutation.mutateAsync({ formId: id });
   };
 
   return (
     <Card
-      onClick={() => router.push(`/builder/${id}`)}
+      onClick={() => router.push(`/b/${id}`)}
       className="
         group
         relative
@@ -143,7 +127,7 @@ export function FormCard({ id, title, description, status, createdAt, updatedAt 
             onClick={(e) => e.stopPropagation()}
             className="w-40 rounded-lg"
           >
-            <DropdownMenuItem onClick={() => router.push(`/builder/${id}`)}>
+            <DropdownMenuItem onClick={() => router.push(`/b/${id}`)}>
               <Pencil className="mr-2 size-4 text-blue-600" />
               Edit
             </DropdownMenuItem>
