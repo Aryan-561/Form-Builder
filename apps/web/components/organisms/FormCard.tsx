@@ -16,6 +16,7 @@ import {
 import { toast } from "sonner";
 import { cn } from "~/lib/utils";
 import { useDeleteForm } from "~/hooks/use-form";
+import { useAlert } from "~/hooks/use-alert";
 
 interface FormCardProps {
   id: string;
@@ -72,16 +73,25 @@ function formatUpdated(date: Date) {
 export function FormCard({ id, title, description, status, createdAt, updatedAt }: FormCardProps) {
   const router = useRouter();
   const deleteFormMutation = useDeleteForm();
+  const alert = useAlert();
 
   const statusMeta = statusConfig[status];
 
-  const handleDelete = (e: React.MouseEvent) => {
+  const handleDelete = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    toast.promise(deleteFormMutation.mutateAsync({ formId: id }), {
-      loading: "Deleting form...",
-      success: "Form deleted successfully!",
-      error: (err) => err?.message || "Failed to delete form.",
-    });
+    try {
+      await alert.promise({
+        variant: "delete",
+        title: "Delete Form?",
+        description: `Are you sure you want to delete "${title}"? This action cannot be undone and will permanently remove all form fields.`,
+        confirmText: "Delete Form",
+        action: () => deleteFormMutation.mutateAsync({ formId: id }),
+        success: "Form deleted successfully.",
+        error: "Failed to delete form.",
+      });
+    } catch {
+      // User cancelled or error caught
+    }
   };
 
   return (

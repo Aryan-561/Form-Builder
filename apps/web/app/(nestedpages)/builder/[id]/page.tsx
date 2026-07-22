@@ -33,6 +33,8 @@ interface FormDefinitionPayload {
     label: string;
     placeholder?: string;
     required?: boolean;
+    min?: number;
+    max?: number;
     options?: string[];
   }[];
 }
@@ -63,13 +65,15 @@ function buildPayload(
     status: "draft",
     fields: selectedElement.map((el, index) => {
       const field: FormDefinitionPayload["fields"][number] = {
-        index,
+        index: Number(index),
         type: el.type,
         label: el.label,
         placeholder: el.placeholder || undefined,
       };
 
       if (el.required) field.required = true;
+      if (el.min !== undefined) field.min = Number(el.min);
+      if (el.max !== undefined) field.max = Number(el.max);
       if (el.options && el.options.length > 0) {
         field.options = el.options.map((opt) => opt.label);
       }
@@ -112,6 +116,8 @@ export default function BuilderPage() {
           label: f.label,
           placeholder: f.placeholder ?? "",
           required: f.required ?? false,
+          min: f.min !== undefined ? Number(f.min) : undefined,
+          max: f.max !== undefined ? Number(f.max) : undefined,
           disabled: false,
           options: f.options?.map((o: string) => ({ label: o, value: o })) || [],
         }));
@@ -181,13 +187,13 @@ export default function BuilderPage() {
           </div>
           <TabsContent
             value="fields"
-            className="flex-1 min-h-0 mt-0 data-[state=active]:flex flex-col"
+            className="flex-1 min-h-0 mt-0 data-[state=active]:flex flex-col overflow-y-auto"
           >
             <BasicFieldsSidebar onClickElement={onClickElement} />
           </TabsContent>
           <TabsContent
             value="structure"
-            className="flex-1 min-h-0 mt-0 data-[state=active]:flex flex-col"
+            className="flex-1 min-h-0 mt-0 data-[state=active]:flex flex-col overflow-y-auto"
           >
             <ReorderItems
               selectedElement={selectedElement}
@@ -199,9 +205,9 @@ export default function BuilderPage() {
       </aside>
 
       {/* Main Builder Canvas */}
-      <main className="ml-72 mr-72 flex-1 flex flex-col h-screen">
+      <main className="ml-72 mr-72 flex-1 flex flex-col h-screen overflow-hidden">
         {/* Sticky Action Bar */}
-        <div className="bg-muted/50 border-b py-2 px-8 flex items-center justify-between gap-3">
+        <div className="bg-muted/50 border-b py-2 px-8 flex items-center justify-between gap-3 shrink-0">
           {/* History navigation buttons (left) */}
           <BackButton fallbackUrl="/dashboard" />
 
@@ -227,7 +233,8 @@ export default function BuilderPage() {
           </Button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-8 relative">
+        {/* Scrollable Middle Canvas Container */}
+        <div className="flex-1 overflow-y-auto p-8 relative min-h-0">
           <div className="max-w-200 mx-auto pb-32">
             <FormTitleBlock
               title={formDetails.title}

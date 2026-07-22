@@ -23,7 +23,8 @@ export interface FormElement {
     | "multiselect"
     | "file"
     | "range"
-    | "color";
+    | "color"
+    | "rating";
 
   label: string;
   placeholder: string;

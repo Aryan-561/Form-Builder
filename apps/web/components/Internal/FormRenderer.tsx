@@ -29,6 +29,10 @@ import {
 } from "~/components/ui/form";
 import { Label } from "~/components/ui/label";
 import { Skeleton } from "~/components/ui/skeleton";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon, Star } from "lucide-react";
+import { Calendar } from "~/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover";
 import {
   Lock,
   Eye,
@@ -48,6 +52,8 @@ interface FormFieldItem {
   placeholder?: string | null;
   required?: boolean;
   options?: string[] | null;
+  min?: number;
+  max?: number;
   index: number;
 }
 
@@ -79,29 +85,100 @@ export function FormRenderer({ mode }: FormRendererProps) {
         case "email":
           fieldSchema = z.string().email("Please enter a valid email address");
           break;
-        case "number":
-          fieldSchema = z.string().refine((v) => v === "" || !isNaN(Number(v)), {
+        case "number": {
+          let numSchema = z.string().refine((v) => v === "" || !isNaN(Number(v)), {
             message: "Must be a valid number",
           });
+          if (field.min !== undefined) {
+            numSchema = numSchema.refine((v) => v === "" || Number(v) >= field.min!, {
+              message: `Minimum value is ${field.min}`,
+            });
+          }
+          if (field.max !== undefined) {
+            numSchema = numSchema.refine((v) => v === "" || Number(v) <= field.max!, {
+              message: `Maximum value is ${field.max}`,
+            });
+          }
+          fieldSchema = numSchema;
           break;
-        case "checkbox":
-          fieldSchema = z.array(z.string());
+        }
+        case "rating":
+          fieldSchema = z.union([z.number(), z.string()]);
           if (field.required) {
-            fieldSchema = (fieldSchema as z.ZodArray<z.ZodString>).min(
-              1,
-              `Please select at least one option for "${field.label}"`,
+            fieldSchema = fieldSchema.refine(
+              (v) => Number(v) >= (field.min ?? 1) && Number(v) <= (field.max ?? 5),
+              {
+                message: `Please select a rating for "${field.label}"`,
+              },
             );
+          } else {
+            fieldSchema = fieldSchema.optional();
           }
           shape[field.id] = fieldSchema;
           return;
-        default:
+        case "date":
           fieldSchema = z.string();
+          if (field.required) {
+            fieldSchema = (fieldSchema as z.ZodString).min(
+              1,
+              `Please select a date for "${field.label}"`,
+            );
+          } else {
+            fieldSchema = fieldSchema.optional();
+          }
+          shape[field.id] = fieldSchema;
+          return;
+        case "checkbox": {
+          const optsList = field.options ?? [];
+          if (optsList.length > 0) {
+            let arrSchema: z.ZodTypeAny = z.array(z.string());
+            if (field.required) {
+              arrSchema = (arrSchema as z.ZodArray<z.ZodString>).min(
+                1,
+                `Please select at least one option for "${field.label}"`,
+              );
+            } else {
+              arrSchema = arrSchema.optional();
+            }
+            shape[field.id] = arrSchema;
+          } else {
+            let singleSchema: z.ZodTypeAny = z.union([z.boolean(), z.string()]);
+            if (field.required) {
+              singleSchema = singleSchema.refine((val) => Boolean(val) === true, {
+                message: `You must check "${field.label}"`,
+              });
+            } else {
+              singleSchema = singleSchema.optional();
+            }
+            shape[field.id] = singleSchema;
+          }
+          return;
+        }
+        default: {
+          let strSchema: z.ZodTypeAny =
+            field.type === "email"
+              ? z.string().email("Please enter a valid email address")
+              : z.string();
+          if (field.min !== undefined) {
+            strSchema = (strSchema as z.ZodString).min(
+              field.min,
+              `"${field.label}" must be at least ${field.min} characters`,
+            );
+          }
+          if (field.max !== undefined) {
+            strSchema = (strSchema as z.ZodString).max(
+              field.max,
+              `"${field.label}" cannot exceed ${field.max} characters`,
+            );
+          }
+          fieldSchema = strSchema;
           break;
+        }
       }
 
-      if (field.required) {
+      if (field.required && field.min === undefined) {
         fieldSchema = (fieldSchema as z.ZodString).min(1, `"${field.label}" is required`);
-      } else {
+      } else if (!field.required && field.min === undefined && field.max === undefined) {
         fieldSchema = fieldSchema.optional();
       }
 
@@ -116,13 +193,19 @@ export function FormRenderer({ mode }: FormRendererProps) {
     if (!formData?.fields) return {};
     const defaults: Record<string, any> = {};
     formData.fields.forEach((f: FormFieldItem) => {
-      defaults[f.id] = f.type === "checkbox" ? [] : "";
+      if (f.type === "checkbox") {
+        defaults[f.id] = [];
+      } else if (f.type === "rating") {
+        defaults[f.id] = 0;
+      } else {
+        defaults[f.id] = "";
+      }
     });
     return defaults;
   }, [formData?.fields]);
 
-  const form = useForm({
-    resolver: zodResolver(schema),
+  const form = useForm<Record<string, any>>({
+    resolver: zodResolver(schema) as any,
     defaultValues,
     values: defaultValues,
     mode: "onBlur",
@@ -418,6 +501,8 @@ function renderControl(field: FormFieldItem, rhfField: any) {
           {...rhfField}
           placeholder={placeholder}
           rows={4}
+          minLength={field.min}
+          maxLength={field.max}
           className="resize-none rounded-lg text-sm"
         />
       );
@@ -427,6 +512,8 @@ function renderControl(field: FormFieldItem, rhfField: any) {
         <Input
           {...rhfField}
           type="email"
+          minLength={field.min}
+          maxLength={field.max}
           placeholder={placeholder || "your@email.com"}
           className="h-10 rounded-lg text-sm"
         />
@@ -437,6 +524,8 @@ function renderControl(field: FormFieldItem, rhfField: any) {
         <Input
           {...rhfField}
           type="number"
+          min={field.min}
+          max={field.max}
           placeholder={placeholder || "0"}
           className="h-10 rounded-lg text-sm"
         />
@@ -483,38 +572,139 @@ function renderControl(field: FormFieldItem, rhfField: any) {
       );
 
     case "checkbox": {
-      const currentValues: string[] = Array.isArray(rhfField.value) ? rhfField.value : [];
-      return (
-        <div className="grid gap-2 pt-1">
-          {(field.options ?? []).map((opt) => {
-            const checked = currentValues.includes(opt);
-            return (
-              <div
-                key={opt}
-                className="flex items-center gap-3 rounded-lg border border-slate-200 dark:border-slate-800 p-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50"
-              >
-                <Checkbox
-                  id={`${field.id}-${opt}`}
-                  checked={checked}
-                  onCheckedChange={(val) => {
-                    if (val) rhfField.onChange([...currentValues, opt]);
-                    else rhfField.onChange(currentValues.filter((v) => v !== opt));
-                  }}
-                />
-                <Label
-                  htmlFor={`${field.id}-${opt}`}
-                  className="cursor-pointer text-sm font-normal text-slate-700 dark:text-slate-300"
+      const optionsList = field.options ?? [];
+      if (optionsList.length > 0) {
+        const currentValues: string[] = Array.isArray(rhfField.value) ? rhfField.value : [];
+        return (
+          <div className="grid gap-2 pt-1">
+            {optionsList.map((opt) => {
+              const checked = currentValues.includes(opt);
+              return (
+                <div
+                  key={opt}
+                  className="flex items-center gap-3 rounded-lg border border-slate-200 dark:border-slate-800 p-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50"
                 >
-                  {opt}
-                </Label>
-              </div>
-            );
-          })}
+                  <Checkbox
+                    id={`${field.id}-${opt}`}
+                    checked={checked}
+                    onCheckedChange={(val) => {
+                      if (val) rhfField.onChange([...currentValues, opt]);
+                      else rhfField.onChange(currentValues.filter((v) => v !== opt));
+                    }}
+                  />
+                  <Label
+                    htmlFor={`${field.id}-${opt}`}
+                    className="cursor-pointer text-sm font-normal text-slate-700 dark:text-slate-300 flex-1"
+                  >
+                    {opt}
+                  </Label>
+                </div>
+              );
+            })}
+          </div>
+        );
+      }
+
+      // Single Checkbox (e.g. Terms & Privacy Policy confirmation)
+      const isChecked = Boolean(rhfField.value);
+      return (
+        <div className="flex items-center gap-3 rounded-lg border border-slate-200 dark:border-slate-800 p-3.5 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50">
+          <Checkbox
+            id={field.id}
+            checked={isChecked}
+            onCheckedChange={(val) => rhfField.onChange(Boolean(val))}
+          />
+          <Label
+            htmlFor={field.id}
+            className="cursor-pointer text-sm font-normal text-slate-700 dark:text-slate-300 leading-snug flex-1"
+          >
+            {placeholder || "I accept the Privacy Policy & Terms of Service"}
+          </Label>
         </div>
       );
     }
 
+    case "rating": {
+      const ratingValue = Number(rhfField.value) || 0;
+      return (
+        <div className="flex items-center gap-3 pt-1">
+          <div className="flex items-center gap-1.5">
+            {[1, 2, 3, 4, 5].map((star) => {
+              const isFilled = star <= ratingValue;
+              return (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={() => rhfField.onChange(star)}
+                  className="p-1 rounded-md transition-all transform hover:scale-110 focus:outline-none"
+                >
+                  <Star
+                    className={`size-7 transition-colors ${
+                      isFilled
+                        ? "fill-amber-400 text-amber-400 drop-shadow-xs"
+                        : "text-slate-300 dark:text-slate-700 hover:text-amber-300"
+                    }`}
+                  />
+                </button>
+              );
+            })}
+          </div>
+          {ratingValue > 0 && (
+            <span className="text-xs font-semibold text-amber-600 dark:text-amber-400">
+              {ratingValue} / 5 Stars
+            </span>
+          )}
+        </div>
+      );
+    }
+
+    case "date": {
+      const rawValue = rhfField.value;
+      const selectedDate = rawValue ? new Date(rawValue) : undefined;
+      const isValidDate = selectedDate && !isNaN(selectedDate.getTime());
+
+      return (
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              type="button"
+              className={`w-full h-10 justify-start text-left font-normal rounded-lg text-sm border-slate-200 dark:border-slate-800 ${
+                !isValidDate ? "text-slate-400" : "text-slate-900 dark:text-slate-100"
+              }`}
+            >
+              <CalendarIcon className="mr-2 size-4 text-slate-500" />
+              {isValidDate ? format(selectedDate, "PPP") : placeholder || "Pick a date"}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={selectedDate}
+              onSelect={(date) => {
+                if (date) {
+                  rhfField.onChange(format(date, "yyyy-MM-dd"));
+                } else {
+                  rhfField.onChange("");
+                }
+              }}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
+      );
+    }
+
     default:
-      return <Input {...rhfField} placeholder={placeholder} className="h-10 rounded-lg text-sm" />;
+      return (
+        <Input
+          {...rhfField}
+          type={field.type || "text"}
+          minLength={field.min}
+          maxLength={field.max}
+          placeholder={placeholder}
+          className="h-10 rounded-lg text-sm"
+        />
+      );
   }
 }

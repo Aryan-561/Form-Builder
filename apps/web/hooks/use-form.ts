@@ -40,4 +40,14 @@ const useDeleteForm = () => {
   return deleteForm;
 };
 
-export { useCreateForm, useUpdateForm, useForm, useForms, useDeleteForm };
+const useUpdateStatus = () => {
+  const utils = trpc.useUtils();
+  const updateStatus = trpc.form.updateStatus.useMutation({
+    onSuccess: () => {
+      utils.form.invalidate();
+    },
+  });
+  return updateStatus;
+};
+
+export { useCreateForm, useUpdateForm, useForm, useForms, useDeleteForm, useUpdateStatus };
