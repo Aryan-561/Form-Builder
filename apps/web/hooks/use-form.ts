@@ -61,6 +61,16 @@ const useUpdateStatus = () => {
   return updateStatus;
 };
 
+const useGenerateFormWithAi = () => {
+  const utils = trpc.useUtils();
+  const generateForm = trpc.ai.generateForm.useMutation({
+    onSuccess: () => {
+      utils.form.invalidate();
+    },
+  });
+  return generateForm;
+};
+
 export {
   useCreateForm,
   useUpdateForm,
@@ -69,4 +79,5 @@ export {
   useDeleteForm,
   useUpdateStatus,
   useLiveForm,
+  useGenerateFormWithAi,
 };

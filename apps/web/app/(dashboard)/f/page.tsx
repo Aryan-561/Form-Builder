@@ -48,11 +48,11 @@ export default function FormsPage() {
       {/* Forms grid */}
       <div className="flex w-full gap-6 overflow-x-auto pb-8 snap-x">
         {MOCK_TEMPLATES.map((template) => (
-          <div key={template.id} className="w-80 shrink-0 snap-start">
+          <div key={template.slug} className="w-80 shrink-0 snap-start">
             <TemplateCard
               title={template.title}
               description={template.description}
-              onClick={() => router.push(`/b/${template.id}`)}
+              onClick={() => router.push(`/b/${template.slug}`)}
             />
           </div>
         ))}
