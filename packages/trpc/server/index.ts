@@ -5,6 +5,7 @@ import { authRouter } from "./routes/auth/route";
 import { formRouter } from "./routes/form/route";
 import { userRouter } from "./routes/user/route";
 import { formSubmissionRouter } from "./routes/formSubmission/route";
+import { aiRouter } from "./routes/ai/route";
 import z from "zod";
 
 export const serverRouter = router({
@@ -13,6 +14,7 @@ export const serverRouter = router({
   form: formRouter,
   user: userRouter,
   formSubmission: formSubmissionRouter,
+  ai: aiRouter,
   test: publicProcedure
     .meta({ openapi: { method: "GET", path: "/test" } })
     .input(z.object({ name: z.string() }))
