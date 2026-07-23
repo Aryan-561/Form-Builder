@@ -10,6 +10,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "@repo/ai": "workspace:*",
     "@repo/env": "workspace:^",
     "@repo/services": "workspace:*",
     "@repo/validators": "workspace:*",

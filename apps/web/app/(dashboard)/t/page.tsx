@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { TemplateCard } from "~/components/ui/template-card";
 import { useCreateForm } from "~/hooks/use-form";
+import { AiGenerateFormDialog } from "~/components/ai-generate-form-dialog";
 
 export const MOCK_TEMPLATES = [
   {
@@ -738,9 +739,14 @@ export default function TemplatesPage() {
 
   return (
     <div className="flex flex-col h-full space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Templates</h1>
-        <p className="text-muted-foreground mt-2">Start quickly with pre-built form templates.</p>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Templates</h1>
+          <p className="text-muted-foreground mt-1">
+            Start quickly with pre-built form templates or let AI generate a custom one.
+          </p>
+        </div>
+        <AiGenerateFormDialog />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

@@ -29,7 +29,8 @@ const envSchema = z.object({
 
   // RESEND_API_KEY: z.string().min(1),
 
-  // GROQ_API_KEY: z.string().min(1),
+  GROQ_API_KEY: z.string().optional(),
+  GEMINI_API_KEY: z.string().min(1),
 
   NODE_ENV: z.enum(["development", "production", "prod", "test"]).default("development"),
 

@@ -25,7 +25,7 @@ const navItems = [
   { title: "My Forms", url: "/f", icon: FileSpreadsheet },
   { title: "Submissions", url: "/s", icon: Inbox },
   { title: "Templates", url: "/t", icon: LayoutTemplate },
-  { title: "Analytics", url: "/a", icon: BarChart2 },
+  // { title: "Analytics", url: "/a", icon: BarChart2 },
 ];
 
 export function AppSidebar() {
