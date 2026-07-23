@@ -9,10 +9,11 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
-    "prepare": "husky"
+    "prepare": "is-ci || husky"
   },
   "devDependencies": {
     "husky": "^9.1.7",
+    "is-ci": "^4.1.0",
     "lint-staged": "^17.1.0",
     "prettier": "^3.7.4",
     "turbo": "^2.7.2",
