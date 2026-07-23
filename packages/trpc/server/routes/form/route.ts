@@ -14,6 +14,7 @@ import {
   formIdInputModel,
   updateStatusInputModel,
   updateStatusOutputModel,
+  getLiveFormByIdOutputModel,
 } from "./model";
 import z from "zod";
 
@@ -116,5 +117,27 @@ export const formRouter = router({
         accessCode: form.accessCode ?? null,
         updatedAt: form.updatedAt,
       };
+    }),
+
+  getLiveFormById: publicProcedure
+    .meta({ openapi: { method: "GET", path: getPath("/live/{formId}"), tags: TAGS } })
+    .input(formIdInputModel)
+    .output(getLiveFormByIdOutputModel)
+    .query(async ({ input }) => {
+      try {
+        return await formService.getLiveFormById(input.formId);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Unknown error";
+
+        if (message === "Form not found") {
+          throw new TRPCError({ code: "NOT_FOUND", message });
+        }
+
+        if (message === "form is not live now!") {
+          throw new TRPCError({ code: "FORBIDDEN", message });
+        }
+
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message });
+      }
     }),
 });
