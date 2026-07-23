@@ -238,7 +238,7 @@ pnpm run format
 
 - **Turborepo Cache hit**: Cache builds and typings using Turborepo's local artifacts cache to speed up continuous integration pipelines.
 - **HTTP-Only Access Tokens**: JWT authentication is validated securely via HttpOnly cookies (`accessToken`) using middleware checks, preventing cross-site scripting token theft.
-- **Varchar Length Sanitization**: Truncates incoming generated data lengths to safely prevent buffer exceptions or DB column index exceptions.
+- **Varchar Length Sanitization**:  Truncates incoming generated data lengths to safely prevent buffer exceptions or DB column index exceptions.
 
 ---
 
