@@ -20,7 +20,7 @@ async function getAuthToken(): Promise<string | null> {
 export const createTRPCHttpBatchClientClient = (opts?: CreateTRPCHttpBatchClientClientOpts) => {
   const c = opts?.enableStreaming ? httpBatchStreamLink : httpLink;
 
-  const baseUrl = "http://localhost:8000";
+  const baseUrl = frontendEnv.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
   return c({
     url: `${baseUrl}/trpc`,
