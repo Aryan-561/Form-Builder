@@ -30,9 +30,15 @@ export async function updateSession(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  const isAuthRoute = pathname.startsWith("/login") || pathname.startsWith("/signup");
-  const isProtectedRoute =
-    pathname.startsWith("/a") || pathname.startsWith("/b") || pathname.startsWith("/a");
+  const authRoutes = ["/login", "/signup"];
+  const isAuthRoute = authRoutes.some(
+    (route) => pathname === route || pathname.startsWith(route + "/"),
+  );
+
+  const protectedRoutes = ["/a", "/b", "/d", "/f", "/s", "/se", "/t"];
+  const isProtectedRoute = protectedRoutes.some(
+    (route) => pathname === route || pathname.startsWith(route + "/"),
+  );
 
   // Redirect unauthenticated users trying to access protected routes
   if (!user && isProtectedRoute) {
