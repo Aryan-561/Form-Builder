@@ -30,8 +30,8 @@ interface FormCardProps {
   title: string;
   description: string | null;
   status: "draft" | "publish" | "private" | "unpublish";
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date | string;
+  updatedAt: Date | string;
 }
 
 const statusConfig = {
@@ -57,7 +57,7 @@ const statusConfig = {
   },
 } as const;
 
-function formatUpdated(date: Date) {
+function formatUpdated(date: Date | string) {
   const now = new Date();
   const target = new Date(date);
   const diff = now.getTime() - target.getTime();
