@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, FileSpreadsheet, LayoutTemplate, BarChart2 } from "lucide-react";
+import { LayoutDashboard, FileSpreadsheet, LayoutTemplate, BarChart2, Inbox } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -23,6 +23,7 @@ import { CreateFormButton } from "../create-form-button";
 const navItems = [
   { title: "Dashboard", url: "/d", icon: LayoutDashboard },
   { title: "My Forms", url: "/f", icon: FileSpreadsheet },
+  { title: "Submissions", url: "/s", icon: Inbox },
   { title: "Templates", url: "/t", icon: LayoutTemplate },
   { title: "Analytics", url: "/a", icon: BarChart2 },
 ];

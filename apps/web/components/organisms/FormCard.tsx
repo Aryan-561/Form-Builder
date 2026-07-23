@@ -1,7 +1,16 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { MoreVertical, Pencil, Eye, Trash2, BarChart2, Calendar } from "lucide-react";
+import {
+  MoreVertical,
+  Pencil,
+  Eye,
+  Trash2,
+  BarChart2,
+  Calendar,
+  ArrowRightIcon,
+  Inbox,
+} from "lucide-react";
 
 import { Card } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
@@ -141,6 +150,11 @@ export function FormCard({ id, title, description, status, createdAt, updatedAt 
               Analytics
             </DropdownMenuItem>
 
+            <DropdownMenuItem onClick={() => router.push(`/s/${id}`)}>
+              <Inbox className="mr-2 size-4 text-blue-600" />
+              Submissions
+            </DropdownMenuItem>
+
             <DropdownMenuSeparator />
 
             <DropdownMenuItem
@@ -169,8 +183,8 @@ export function FormCard({ id, title, description, status, createdAt, updatedAt 
         <span className="flex items-center gap-1">
           <Calendar className="size-3.5" /> Updated {formatUpdated(updatedAt)}
         </span>
-        <span className="text-blue-600 dark:text-blue-400 font-medium text-[11px] opacity-0 group-hover:opacity-100 transition-opacity">
-          Open Builder →
+        <span className="text-blue-600 dark:text-blue-400 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+          <ArrowRightIcon />
         </span>
       </div>
     </Card>
