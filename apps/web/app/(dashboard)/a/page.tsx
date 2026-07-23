@@ -17,10 +17,7 @@ export default function AnalyticsPage() {
     <div className="p-8 max-w-[1400px] mx-auto space-y-8">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-2 text-primary mb-2 hover:underline"
-          >
+          <Link href="/d" className="flex items-center gap-2 text-primary mb-2 hover:underline">
             <ArrowLeft className="w-4 h-4" />
             <span className="text-xs font-bold uppercase tracking-wider">Back to Dashboard</span>
           </Link>

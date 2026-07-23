@@ -13,7 +13,7 @@ interface NavigationHistoryButtonsProps {
 
 export function NavigationHistoryButtons({
   className,
-  fallbackUrl = "/dashboard",
+  fallbackUrl = "/d",
 }: NavigationHistoryButtonsProps) {
   const router = useRouter();
 
@@ -53,7 +53,7 @@ interface BackButtonProps {
   fallbackUrl?: string;
 }
 
-export function BackButton({ className, fallbackUrl = "/dashboard" }: BackButtonProps) {
+export function BackButton({ className, fallbackUrl = "/d" }: BackButtonProps) {
   const router = useRouter();
 
   const handleBack = () => {

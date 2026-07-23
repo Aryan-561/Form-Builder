@@ -36,7 +36,7 @@ export function AuthForm({ type }: AuthFormProps) {
         toast.promise(login({ email, password }), {
           loading: "Signing in...",
           success: () => {
-            router.push("/dashboard");
+            router.push("/d");
             router.refresh();
             return "Successfully signed in!";
           },
@@ -56,7 +56,7 @@ export function AuthForm({ type }: AuthFormProps) {
           {
             loading: "Creating account...",
             success: () => {
-              router.push("/dashboard");
+              router.push("/d");
               router.refresh();
               return "Account created successfully!";
             },
