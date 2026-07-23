@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { toast } from "sonner";
 import { useParams } from "next/navigation";
-import { useForm as useFormQuery } from "~/hooks/use-form";
+import { useLiveForm as useFormQuery } from "~/hooks/use-form";
 import { useSubmitForm } from "~/hooks/use-submitform";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";

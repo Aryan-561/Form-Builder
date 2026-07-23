@@ -86,3 +86,17 @@ export const updateStatusOutputModel = z.object({
   accessCode: z.string().nullable(),
   updatedAt: z.date(),
 });
+
+// --- getLiveFormById ---
+export const getLiveFormByIdOutputModel = z.object({
+  id: z.string().describe("id of the form"),
+  title: z.string().describe("title of the form"),
+  description: z.string().nullable().describe("description of the form"),
+  slug: z.string().describe("slug of the form"),
+  status: z.enum(["draft", "publish", "private", "unpublish"]).describe("status of the form"),
+  accessCode: z.string().nullable().describe("access code for private forms"),
+  createdBy: z.string().describe("id of the user who created the form"),
+  createdAt: z.date().describe("creation timestamp"),
+  updatedAt: z.date().describe("last updated timestamp"),
+  fields: z.array(formFieldOutputModel).describe("fields of the form"),
+});

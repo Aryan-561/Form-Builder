@@ -244,4 +244,29 @@ export class FormService {
       throw new Error("Failed to update status!");
     }
   }
+
+  async getLiveFormById(formId: UUidInput) {
+    const form = await db.query.formsTable.findFirst({
+      where: eq(formsTable.id, formId),
+    });
+
+    if (!form) {
+      throw new Error("Form not found");
+    }
+
+    if (form.status === "draft" || form.status === "unpublish") {
+      throw new Error("form is not live now!");
+    }
+
+    const fields = await db
+      .select()
+      .from(formFieldsTable)
+      .where(eq(formFieldsTable.formId, formId))
+      .orderBy(formFieldsTable.index);
+
+    return {
+      ...form,
+      fields,
+    };
+  }
 }

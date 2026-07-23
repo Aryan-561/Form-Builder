@@ -18,6 +18,14 @@ const useForm = (formId: string) => {
   return getForm;
 };
 
+const useLiveForm = (formId: string) => {
+  const getForm = trpc.form.getLiveFormById.useQuery(
+    { formId },
+    { refetchOnWindowFocus: true, staleTime: 0 },
+  );
+  return getForm;
+};
+
 const useForms = () => {
   const getForms = trpc.form.getUserForms.useQuery();
   return getForms;
@@ -53,4 +61,12 @@ const useUpdateStatus = () => {
   return updateStatus;
 };
 
-export { useCreateForm, useUpdateForm, useForm, useForms, useDeleteForm, useUpdateStatus };
+export {
+  useCreateForm,
+  useUpdateForm,
+  useForm,
+  useForms,
+  useDeleteForm,
+  useUpdateStatus,
+  useLiveForm,
+};
