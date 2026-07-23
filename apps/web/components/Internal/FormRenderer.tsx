@@ -7,6 +7,7 @@ import z from "zod";
 import { toast } from "sonner";
 import { useParams } from "next/navigation";
 import { useForm as useFormQuery } from "~/hooks/use-form";
+import { useSubmitForm } from "~/hooks/use-submitform";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
@@ -211,21 +212,52 @@ export function FormRenderer({ mode }: FormRendererProps) {
     mode: "onBlur",
   });
 
+  const submitFormMutation = useSubmitForm();
+
   const onSubmit = async (values: Record<string, any>) => {
+    let userEmail: string | undefined = undefined;
+    const formattedValues: { formFieldId: string; value: string }[] = [];
+
+    if (formData?.fields) {
+      formData.fields.forEach((field: FormFieldItem) => {
+        const rawVal = values[field.id];
+        if (rawVal === undefined || rawVal === null || rawVal === "") return;
+        if (Array.isArray(rawVal) && rawVal.length === 0) return;
+
+        let stringVal = "";
+        if (Array.isArray(rawVal)) {
+          stringVal = rawVal.join(", ");
+        } else {
+          stringVal = String(rawVal);
+        }
+
+        if (field.type === "email" && stringVal.includes("@")) {
+          userEmail = stringVal;
+        }
+
+        formattedValues.push({
+          formFieldId: field.id,
+          value: stringVal,
+        });
+      });
+    }
+
+    if (formattedValues.length === 0) {
+      toast.error("Please fill in at least one field before submitting.");
+      return;
+    }
+
     setIsSubmitting(true);
     try {
-      const payload: Record<string, any> = {};
-      Object.entries(values).forEach(([k, v]) => {
-        if (Array.isArray(v) ? v.length > 0 : v !== "" && v !== undefined) {
-          payload[k] = v;
-        }
+      await submitFormMutation.mutateAsync({
+        formId,
+        email: userEmail,
+        values: formattedValues,
       });
-
-      await new Promise((resolve) => setTimeout(resolve, 800));
       toast.success("Form response submitted successfully!");
       setIsSubmitted(true);
-    } catch {
-      toast.error("Failed to submit form. Please try again.");
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to submit form. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
